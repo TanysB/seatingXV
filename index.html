@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Caroline XV &middot; Bienvenida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Parisienne&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFFBF6;        /* ivory background */
+    --rose:#E3A4C4;         /* rosa claro — primary accent */
+    --rose-dark:#B0577F;    /* deeper pink for contrast/readability */
+    --gold:#C6A15C;         /* gold accent */
+    --gold-light:#EAD9AE;   /* pale gold */
+    --plum:#5B2A46;         /* deep berry ink */
+    --blush:#F8E5EF;        /* pale pink line color */
+    --ink:#5B2A46;
+    --muted:#9C7189;
+    --arrived:#4C8C5B;
+    --radius:22px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:
+      radial-gradient(circle at 12% 18%, rgba(198,161,92,0.08), transparent 45%),
+      radial-gradient(circle at 88% 82%, rgba(227,164,196,0.14), transparent 45%),
+      var(--cream);
+    color:var(--ink);
+    overflow-x:hidden;
+    overflow-y:auto;
+    -webkit-user-select:none;user-select:none;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001s !important; transition-duration:0.001s !important;}
+  }
+
+  #app{position:relative; min-height:100vh; width:100%; z-index:1;}
+  .bg-image{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-size:cover; background-position:center; background-repeat:no-repeat;
+    opacity:0.2;
+  }
+
+  .screen{
+    position:absolute; inset:0;
+    display:none;
+    flex-direction:column; align-items:center; justify-content:flex-start;
+    padding:90px 5vw 50px;
+    text-align:center;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    min-height:100vh;
+  }
+  .screen.active{display:flex;}
+
+  .sparkle-row{
+    font-size:20px; color:var(--gold); letter-spacing:.5em;
+    margin-bottom:10px; opacity:.85;
+  }
+  .eyebrow{
+    font-size:16px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--rose-dark); font-weight:600; margin-bottom:10px;
+  }
+  h1{
+    font-family:'Playfair Display',serif;
+    font-weight:800;
+    color:var(--plum);
+    margin:0 0 10px;
+    line-height:1.08;
+  }
+  p.sub{
+    font-size:27px; color:var(--plum); max-width:620px; margin:0 auto 34px;
+    line-height:1.5; font-weight:500;
+  }
+  .sub .en{
+    display:block; font-size:0.68em; font-style:italic; color:var(--muted);
+    margin-top:6px; font-weight:400; letter-spacing:.01em;
+  }
+  .divider{
+    color:var(--gold); font-size:20px; letter-spacing:.4em; margin:6px 0 18px; opacity:.9;
+  }
+
+  /* Welcome screen */
+  .fifteen-mark{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;
+    font-style:italic;
+    font-size:min(34vw,300px);
+    color:var(--rose);
+    opacity:0.10;
+    position:absolute;
+    top:50%; left:50%; transform:translate(-50%,-52%);
+    line-height:1; pointer-events:none; user-select:none;
+    letter-spacing:0.02em;
+  }
+  #welcomeTitle{font-size:clamp(46px,7vw,68px);}
+  .celebrant-script{
+    font-family:'Parisienne',cursive;
+    font-weight:400;
+    color:var(--rose-dark);
+    display:block;
+    font-size:1.55em;
+    line-height:1.15;
+    margin-bottom:6px;
+  }
+  .xv-sub{
+    display:block;
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    font-size:0.34em;
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .portrait{
+    width:clamp(130px,17vw,180px);
+    height:clamp(130px,17vw,180px);
+    border-radius:50%;
+    object-fit:cover;
+    border:5px solid #fff;
+    box-shadow:0 0 0 3px var(--gold), 0 14px 30px rgba(91,42,70,.22);
+    margin-bottom:20px;
+  }
+  .name-input{
+    width:min(600px,90vw);
+    font-family:'Poppins',sans-serif;
+    font-size:29px; font-weight:500;
+    padding:22px 26px;
+    border-radius:100px;
+    border:2px solid var(--blush);
+    outline:none;
+    text-align:center;
+    background:#fff;
+    color:var(--ink);
+    box-shadow:0 8px 24px rgba(227,164,196,0.25);
+  }
+  .name-input::placeholder{color:#c9a7bb;}
+  .name-input:focus{border-color:var(--rose);}
+
+  .btn{
+    font-family:'Poppins',sans-serif;
+    font-weight:600; font-size:22px;
+    padding:20px 42px;
+    border-radius:100px;
+    border:none;
+    cursor:pointer;
+    margin-top:28px;
+    transition:transform .12s ease;
+  }
+  .btn:active{transform:scale(0.96);}
+  .btn-primary{background:var(--rose-dark); color:#fff; box-shadow:0 10px 26px rgba(176,87,127,.35);}
+  .btn-secondary{background:transparent; color:var(--rose-dark); border:2px solid var(--rose-dark);}
+  .btn-gold{background:var(--gold); color:#fff; box-shadow:0 10px 26px rgba(198,161,92,.4);}
+  .btn-row{display:flex; gap:16px; flex-wrap:wrap; justify-content:center;}
+  .btn-ghost{background:none;border:none;color:var(--muted);font-size:17px;text-decoration:underline;cursor:pointer;margin-top:20px;}
+
+  /* Match list */
+  .match-list{display:flex; flex-direction:column; gap:12px; width:min(500px,90vw);}
+  .match-item{
+    background:#fff; border:2px solid var(--blush); border-radius:100px;
+    padding:20px 30px; font-size:25px; font-weight:600; color:var(--plum);
+    cursor:pointer;
+  }
+  .match-item:active{background:var(--blush);}
+
+  /* Result screen — redesigned as a framed invitation card */
+  .result-card{
+    position:relative;
+    background:linear-gradient(180deg, #fff, #FFFCF8);
+    border-radius:20px;
+    padding:40px 34px 30px;
+    width:min(460px,90vw);
+    box-shadow:0 22px 50px rgba(91,42,70,.16);
+    border:1px solid var(--blush);
+    margin-top:10px;
+  }
+  .result-card .corner{position:absolute; width:24px; height:24px; border:2px solid var(--gold);}
+  .result-card .corner.tl{top:-8px; left:-8px; border-right:none; border-bottom:none; border-radius:6px 0 0 0;}
+  .result-card .corner.tr{top:-8px; right:-8px; border-left:none; border-bottom:none; border-radius:0 6px 0 0;}
+  .result-card .corner.bl{bottom:-8px; left:-8px; border-right:none; border-top:none; border-radius:0 0 0 6px;}
+  .result-card .corner.br{bottom:-8px; right:-8px; border-left:none; border-top:none; border-radius:0 0 6px 0;}
+
+  .name-divider{
+    color:var(--gold); font-size:14px; letter-spacing:.5em;
+    margin:2px 0 24px; opacity:.85;
+  }
+
+  .table-badge{
+    background:radial-gradient(circle at 34% 30%, #CE84A8, var(--rose-dark) 72%);
+    color:#fff;
+    font-family:'Playfair Display',serif;
+    font-weight:800;
+    font-size:clamp(52px,9vw,80px);
+    width:clamp(140px,18vw,172px); height:clamp(140px,18vw,172px);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 24px;
+    box-shadow:0 0 0 3px var(--gold), 0 0 0 8px #fff, 0 16px 34px rgba(176,87,127,.3);
+  }
+  .table-badge small{display:block;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;}
+  .card-divider{
+    display:flex; align-items:center; gap:12px;
+    color:var(--gold); margin:0 0 22px;
+  }
+  .card-divider::before, .card-divider::after{
+    content:""; height:1px; flex:1; background:var(--blush);
+  }
+  .card-divider span{font-size:14px;}
+  .team-name-wrap{
+    margin:0 0 26px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .team-name-label{
+    font-size:13px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--rose-dark); font-weight:700; margin-bottom:8px;
+  }
+  .team-name-label .en{
+    display:block; font-size:0.72em; font-style:italic; color:var(--muted);
+    font-weight:400; letter-spacing:.02em; text-transform:none; margin-top:3px;
+  }
+  .team-name-value{
+    font-family:'Parisienne',cursive;
+    font-size:clamp(34px,5.5vw,48px);
+    color:var(--rose-dark);
+    line-height:1.15;
+    display:flex; align-items:center; gap:12px;
+    text-align:center;
+  }
+  .team-name-value::before, .team-name-value::after{
+    content:"\2726";
+    font-family:'Poppins',sans-serif;
+    font-size:14px;
+    color:var(--gold);
+  }
+  .tablemates{
+    text-align:left;
+  }
+  .tablemates h3{margin:0 0 14px; font-size:14px; letter-spacing:.15em; text-transform:uppercase; color:var(--rose-dark); font-weight:700; text-align:center;}
+  .tablemates h3 .en{display:block; font-size:0.78em; font-style:italic; color:var(--muted); text-transform:none; letter-spacing:0; margin-top:2px; font-weight:400;}
+  .tablemates ul{list-style:none; margin:0; padding:0; font-size:24px; color:var(--plum); font-weight:600;}
+  .tablemates li{padding:8px 4px; border-top:1px solid var(--blush);}
+  .tablemates li:first-child{border-top:none;}
+  .tablemates li.arrived{color:var(--arrived); font-weight:700;}
+  .tap-instruction{
+    text-align:center; font-size:17px; font-weight:600; color:var(--rose-dark);
+    background:var(--blush); border-radius:100px; padding:11px 16px;
+    margin:0 0 14px;
+  }
+  .tap-instruction .en{
+    display:block; font-size:0.78em; font-style:italic; font-weight:400; color:var(--muted); margin-top:2px;
+  }
+  .check-icon{
+    display:inline-block; width:20px; height:20px; margin-right:10px;
+    border:2px solid var(--rose-dark); border-radius:50%;
+    vertical-align:middle; position:relative; top:-1px;
+  }
+  .check-icon.done{
+    border-color:var(--arrived); background:var(--arrived);
+    color:#fff; text-align:center; line-height:16px; font-size:12px; font-weight:700;
+  }
+  .tablemates li.tappable{cursor:pointer;}
+  .tablemates li.tappable:active{background:var(--blush);}
+  .empty-note{color:var(--muted); font-size:19px; font-style:italic; text-align:center;}
+
+  /* Video screen */
+  video{
+    width:min(520px,88vw); max-height:42vh;
+    border-radius:var(--radius);
+    background:#2a1420;
+    box-shadow:0 16px 40px rgba(91,42,70,.25);
+    object-fit:cover;
+  }
+  .record-controls{margin-top:22px; display:flex; align-items:center; gap:20px;}
+  .rec-btn{
+    width:80px; height:80px; border-radius:50%;
+    background:var(--rose-dark); border:5px solid #fff;
+    box-shadow:0 0 0 4px var(--rose-dark);
+    cursor:pointer; position:relative;
+  }
+  .rec-btn .dot{
+    position:absolute; inset:0; margin:auto;
+    width:28px; height:28px; border-radius:6px; background:#fff;
+    display:none;
+  }
+  .rec-btn.recording .dot{display:block;}
+  .rec-btn.recording{animation:pulse 1.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 4px var(--rose-dark);}50%{box-shadow:0 0 0 10px rgba(176,87,127,.25);}}
+  .timer{font-size:24px; font-weight:600; color:var(--rose-dark); font-variant-numeric:tabular-nums; min-width:70px;}
+
+  /* Thank you */
+  .checkmark{
+    width:116px;height:116px;border-radius:50%;background:var(--gold);
+    display:flex;align-items:center;justify-content:center;margin-bottom:22px;
+    box-shadow:0 12px 30px rgba(198,161,92,.4);
+  }
+  .checkmark svg{width:58px;height:58px;}
+
+  /* Settings */
+  /* Settings access — an invisible corner tap-zone, no visual hint for guests */
+  .tap-zone{
+    position:fixed; top:0; left:0; z-index:20;
+    width:80px; height:80px;
+    background:transparent; border:none;
+  }
+  .pin-modal{
+    background:#fff; border-radius:24px; padding:34px 30px;
+    width:min(320px,90vw); text-align:center;
+  }
+  .pin-modal h2{font-family:'Playfair Display',serif; margin:0 0 6px; color:var(--plum); font-size:22px;}
+  .pin-modal .en{display:block; font-size:0.55em; font-style:italic; color:var(--muted); font-family:'Poppins',sans-serif; margin-top:2px;}
+  .pin-input{
+    width:100%; font-size:32px; letter-spacing:.5em; text-align:center;
+    padding:14px; border-radius:14px; border:2px solid var(--blush);
+    margin:18px 0 6px; outline:none; font-family:'Poppins',sans-serif;
+  }
+  .pin-input:focus{border-color:var(--rose);}
+  .pin-error{color:#B5654A; font-size:14px; min-height:20px; margin-bottom:8px;}
+  .fullscreen-btn{
+    position:fixed; top:16px; right:16px; z-index:20;
+    width:42px; height:42px; border-radius:50%;
+    background:rgba(91,42,70,0.08); border:none;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; opacity:0.55;
+  }
+  .fullscreen-btn svg{width:18px;height:18px;fill:var(--plum);}
+
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(91,42,70,.55);
+    z-index:50; display:none; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .modal-overlay.active{display:flex;}
+  .modal{
+    background:#fff; border-radius:24px; padding:30px;
+    width:min(560px,94vw); max-height:88vh; overflow:auto;
+    text-align:left;
+  }
+  .modal h2{font-family:'Playfair Display',serif; margin-top:0; color:var(--plum); font-size:26px;}
+  .modal h2 .en{display:block; font-size:0.5em; font-style:italic; color:var(--muted); font-family:'Poppins',sans-serif; margin-top:2px;}
+  .modal label{display:block; font-weight:600; font-size:14px; margin:16px 0 6px; color:var(--rose-dark);}
+  .modal input[type=text], .modal textarea{
+    width:100%; font-family:'Poppins',sans-serif; font-size:16px;
+    padding:12px 14px; border-radius:12px; border:2px solid var(--blush);
+    outline:none;
+  }
+  .modal textarea{min-height:220px; resize:vertical; font-family:monospace; font-size:14px; line-height:1.6;}
+  .modal .hint{font-size:13px; color:var(--muted); margin-top:4px;}
+  .modal-actions{display:flex; gap:12px; margin-top:22px; justify-content:flex-end;}
+  .modal .btn{margin-top:0; padding:12px 26px; font-size:16px;}
+  .link-btn{background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:14px;}
+
+  /* Seating map overlay */
+  .map-overlay{
+    position:fixed; inset:0; background:rgba(91,42,70,.7);
+    z-index:55; display:none; align-items:center; justify-content:center;
+    padding:20px;
+  }
+  .map-overlay.active{display:flex;}
+  .map-container{
+    position:relative; width:min(92vw,900px);
+    background:#fff; border-radius:20px; padding:14px;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+  }
+  .map-container img{width:100%; display:block; border-radius:12px;}
+  .map-highlight{
+    position:absolute; width:9%; aspect-ratio:1/1;
+    transform:translate(-50%,-50%);
+    border-radius:50%; border:5px solid var(--gold);
+    box-shadow:0 0 0 8px rgba(198,161,92,.35), 0 0 24px rgba(198,161,92,.6);
+    animation:mapPulse 1.4s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes mapPulse{
+    0%,100%{ box-shadow:0 0 0 8px rgba(198,161,92,.35), 0 0 24px rgba(198,161,92,.6); }
+    50%{ box-shadow:0 0 0 14px rgba(198,161,92,.15), 0 0 34px rgba(198,161,92,.8); }
+  }
+  .map-close{
+    display:block; margin:14px auto 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-image" id="bgImage" style="display:none;"></div>
+<div class="tap-zone" id="tapZone" title="" aria-label=""></div>
+<button class="fullscreen-btn" id="fsBtn" title="Full screen" aria-label="Full screen">
+  <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+</button>
+
+<div id="app">
+
+  <!-- WELCOME -->
+  <section class="screen active" id="screen-welcome">
+    <div class="fifteen-mark">XV</div>
+    <div class="sparkle-row">&#10022;&nbsp;&#10022;&nbsp;&#10022;</div>
+    <div class="eyebrow">Bienvenidos &middot; Welcome</div>
+    <img class="portrait" id="welcomePortrait" src="" alt="" style="display:none;">
+    <h1 id="welcomeTitle"><span class="celebrant-script" id="celebrantTitle">Caroline</span><span class="xv-sub">XV A&ntilde;os</span></h1>
+    <p class="sub">Escribe tu nombre para encontrar tu mesa<span class="en">Type your name to find your table</span></p>
+    <input type="text" class="name-input" id="nameInput" placeholder="Tu nombre completo &middot; Your full name" autocomplete="off">
+    <div>
+      <button class="btn btn-primary" id="findBtn">Buscar Mi Mesa &middot; Find My Seat</button>
+    </div>
+  </section>
+
+  <!-- MULTI MATCH -->
+  <section class="screen" id="screen-match">
+    <div class="eyebrow">Varios nombres parecidos &middot; A few close matches</div>
+    <h1 style="font-size:38px;">&iquest;Cu&aacute;l eres t&uacute;? &middot; Which one is you?</h1>
+    <div class="match-list" id="matchList"></div>
+    <button class="btn-ghost" id="matchBack">Ninguno de estos, intentar de nuevo &middot; None of these, try again</button>
+  </section>
+
+  <!-- NOT FOUND YET (first two tries) -->
+  <section class="screen" id="screen-notfound">
+    <div class="eyebrow">Casi &middot; Almost</div>
+    <h1 style="font-size:38px;">No encontramos ese nombre</h1>
+    <p class="sub">Intenta escribir tu nombre completo o revisa la ortograf&iacute;a.<span class="en">Try typing your full name, or double-check the spelling.</span></p>
+    <button class="btn btn-primary" id="notfoundRetryBtn">Intentar de Nuevo &middot; Try Again</button>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="screen-result">
+    <div class="eyebrow" id="resultGreeting">&iexcl;Bienvenido/a! &middot; Welcome</div>
+    <h1 id="resultName" style="font-size:38px;"></h1>
+    <div class="name-divider">&#10022;&nbsp;&#10022;&nbsp;&#10022;</div>
+    <div class="result-card">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+      <div class="table-badge"><span><small>Mesa &middot; Table</small><span id="resultTableNum"></span></span></div>
+      <div class="team-name-wrap">
+        <div class="team-name-label">Su equipo se llama<span class="en">Your table name is</span></div>
+        <div class="team-name-value" id="resultTableName"></div>
+      </div>
+      <div class="card-divider"><span>&#10022;</span></div>
+      <div class="tablemates">
+        <h3>Sentados contigo<span class="en">Sitting with you</span></h3>
+        <p class="tap-instruction">&#128070; &iquest;Llegaron contigo? Toca sus nombres<span class="en">Arrived with you? Tap their names</span></p>
+        <ul id="tablematesList"></ul>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="viewMapBtn" style="display:none;">Ver Mapa &middot; View Map</button>
+      <button class="btn btn-gold" id="toVideoBtn">Dejar un Mensaje &middot; Leave a Message</button>
+      <button class="btn btn-secondary" id="skipBtn">Omitir, Ya Termin&eacute; &middot; Skip, I'm Done</button>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="screen" id="screen-video">
+    <div class="eyebrow">Un poco de magia &middot; A little birthday magic</div>
+    <h1 style="font-size:30px;">Di algo para <span class="celebrant-script" style="font-size:1.2em;" id="videoCelebrant">Caroline</span></h1>
+    <p class="sub" id="videoHint">Tienes hasta 60 segundos. Presiona el bot&oacute;n para grabar.<span class="en">You've got up to 60 seconds. Press the button to start recording.</span></p>
+    <video id="preview" autoplay muted playsinline></video>
+    <div class="record-controls" id="recordControls">
+      <span class="timer" id="timerText">0:00</span>
+      <button class="rec-btn" id="recBtn" aria-label="Record"><span class="dot"></span></button>
+      <span style="width:64px;"></span>
+    </div>
+    <div class="btn-row" id="reviewControls" style="display:none;">
+      <button class="btn btn-secondary" id="retakeBtn">Repetir &middot; Retake</button>
+      <button class="btn btn-primary" id="saveVideoBtn">Guardar &middot; Save &amp; Finish</button>
+    </div>
+    <button class="btn-ghost" id="cancelVideoBtn">Cancelar y Omitir &middot; Cancel and Skip</button>
+  </section>
+
+  <!-- THANK YOU -->
+  <section class="screen" id="screen-thankyou">
+    <div class="checkmark">
+      <svg viewBox="0 0 24 24" fill="#fff"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+    </div>
+    <h1 style="font-size:40px;">&iexcl;Gracias! &middot; Thank you!</h1>
+    <p class="sub" id="thankyouSub">Disfruta la celebraci&oacute;n &#127881;<span class="en">Enjoy the celebration</span></p>
+  </section>
+
+</div>
+
+<!-- PIN LOCK MODAL -->
+<div class="modal-overlay" id="pinOverlay">
+  <div class="pin-modal">
+    <h2>Ingresa el PIN<span class="en">Enter Settings PIN</span></h2>
+    <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" class="pin-input" id="pinInput" placeholder="&bull;&bull;&bull;&bull;">
+    <div class="pin-error" id="pinError">&nbsp;</div>
+    <button class="btn btn-primary" id="pinSubmitBtn" style="width:100%;">Desbloquear &middot; Unlock</button>
+    <button class="link-btn" id="pinCancelBtn" style="margin-top:14px;">Cancelar &middot; Cancel</button>
+  </div>
+</div>
+
+<!-- SEATING MAP OVERLAY -->
+<div class="map-overlay" id="mapOverlay">
+  <div>
+    <div class="map-container">
+      <img id="mapImage" src="" alt="Mapa de mesas">
+      <div class="map-highlight" id="mapHighlight" style="display:none;"></div>
+    </div>
+    <div id="mapCaption" style="color:#fff; font-size:24px; font-weight:600; margin-top:14px; font-family:'Poppins',sans-serif;"></div>
+    <button class="btn btn-primary map-close" id="mapCloseBtn">Cerrar &middot; Close</button>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2>Configuraci&oacute;n de la Fiesta<span class="en">Party Setup</span></h2>
+    <label for="celebrantInput">Nombre de la quincea&ntilde;era &middot; Celebrant's first name</label>
+    <input type="text" id="celebrantInput" placeholder="Caroline">
+
+    <label for="pinChangeInput">PIN de acceso &middot; Settings PIN (4 digits)</label>
+    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" id="pinChangeInput" placeholder="1234">
+    <div class="hint">Necesario para volver a abrir esta pantalla. Needed to open this screen again.</div>
+
+    <label for="photoInput">Foto de la quincea&ntilde;era &middot; Celebrant's photo</label>
+    <input type="file" id="photoInput" accept="image/*">
+    <div class="hint">Se muestra en la pantalla de bienvenida. Shown on the welcome screen.</div>
+    <div id="photoPreviewWrap" style="margin-top:10px; display:none;">
+      <img id="photoPreview" style="width:90px;height:90px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px var(--gold);">
+      <button class="link-btn" id="removePhotoBtn" style="margin-left:12px;">Quitar foto &middot; Remove photo</button>
+    </div>
+
+    <label for="bgInput">Imagen de fondo &middot; Background image</label>
+    <input type="file" id="bgInput" accept="image/*">
+    <div class="hint">Cubre toda la pantalla, detr&aacute;s de todo lo dem&aacute;s. Fills the whole screen, behind everything else. Si no subes una aqu&iacute;, se usa autom&aacute;ticamente <code>bgCaroline.jpg</code> (o .jpeg/.png) si est&aacute; en la misma carpeta. If you don't upload one here, it auto-uses <code>bgCaroline.jpg</code> (or .jpeg/.png) from the same folder.</div>
+    <div id="bgPreviewWrap" style="margin-top:10px; display:none;">
+      <img id="bgPreview" style="width:120px;height:70px;border-radius:10px;object-fit:cover;box-shadow:0 0 0 2px var(--blush);">
+      <button class="link-btn" id="removeBgBtn" style="margin-left:12px;">Quitar fondo &middot; Remove background</button>
+    </div>
+    <label for="bgOpacityInput" style="margin-top:14px;">Visibilidad del fondo &middot; Background visibility (<span id="bgOpacityValue">20</span>%)</label>
+    <input type="range" id="bgOpacityInput" min="5" max="60" value="20" style="width:100%;">
+
+    <label for="guestTextarea">Lista de invitados y mesas &middot; Guest list &amp; tables</label>
+    <textarea id="guestTextarea" placeholder="Ava Martinez, 1&#10;Liam Torres, 1&#10;Noah Garcia, 2"></textarea>
+    <div class="hint">Un invitado por l&iacute;nea: <strong>Nombre Completo, N&uacute;mero de Mesa</strong>. Mesa 17 es para quien no est&eacute; en la lista. One guest per line: <strong>Full Name, Table Number</strong>. Table 17 is reserved for anyone not on the list.</div>
+    <div class="hint" style="margin-top:8px;">15 mesas tienen 8 sillas, excepto <strong>Mesa 1 y 2 (7)</strong> y <strong>Mesa 11, 15, 16 (9)</strong>, seg&uacute;n tus ajustes actuales. 15 tables have 8 chairs, except <strong>Table 1 &amp; 2 (7)</strong> and <strong>Table 11, 15, 16 (9)</strong>, per your current adjustments.</div>
+    <div class="hint" id="capacityWarning" style="color:#B5654A; display:none;"></div>
+    <div class="hint" style="margin-top:10px;"><button class="link-btn" id="resetArrivalsBtn">Reiniciar llegadas y asientos de amigos &middot; Reset arrivals &amp; friend seating</button></div>
+
+    <div class="modal-actions">
+      <button class="link-btn" id="resetSampleBtn">Restablecer datos de muestra &middot; Reset sample</button>
+      <button class="btn btn-secondary" id="closeModalBtn">Cancelar &middot; Cancel</button>
+      <button class="btn btn-primary" id="saveModalBtn">Guardar &middot; Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'quince-checkin-data-v6';
+
+const SAMPLE = {
+  celebrantName: "Caroline",
+  photoUrl: null,
+  backgroundUrl: null,
+  backgroundOpacity: 20,
+  settingsPin: "1234",
+  guests: [
+    // Mesa 1 (7)
+    {name:"Jesus Nunez Mondragon", table:1},
+    {name:"Sandra Aguilar Garcia", table:1},
+    {name:"Mauricio Nunez Aguilar", table:1},
+    {name:"Zulem Nunez Aguilar", table:1},
+    {name:"Luis Alberto Lopez Izquierdo", table:1},
+    {name:"Rosa Nunez Aguilar", table:1},
+    {name:"Jose Antonio Tovar Gonzalez", table:1},
+    // Mesa 2 (8)
+    {name:"Berenice Vences", table:2},
+    {name:"Adela Vences", table:2},
+    {name:"Jesus Vences", table:2},
+    {name:"Alan Ruelas", table:2},
+    {name:"Juanita Rojas Ramirez", table:2},
+    {name:"Amanda Rojas Ramirez", table:2},
+    {name:"Sergio Alvarez Villegas", table:2},
+    {name:"Columba", table:2},
+    // Mesa 3 (8)
+    {name:"Vero", table:3},
+    {name:"Javier", table:3},
+    {name:"Sherlyn", table:3},
+    {name:"Isabella Siquiera", table:3},
+    {name:"Sophia Malling", table:3},
+    {name:"Oscar", table:3},
+    {name:"Karen", table:3},
+    {name:"Mario", table:3},
+    // Mesa 4 (8)
+    {name:"Adriana", table:4},
+    {name:"Ian", table:4},
+    {name:"Axel", table:4},
+    {name:"Axel Invitado 1", table:4},
+    {name:"Axel Invitado 2", table:4},
+    {name:"Axel Invitado 3", table:4},
+    {name:"Cristian", table:4},
+    {name:"Liana Arce", table:4},
+    // Mesa 5 (7)
+    {name:"Mayra", table:5},
+    {name:"Fortino", table:5},
+    {name:"Alison", table:5},
+    {name:"Alison Invitado 1", table:5},
+    {name:"Kevin", table:5},
+    {name:"Titi", table:5},
+    {name:"Odalys", table:5},
+    // Mesa 6 (8)
+    {name:"Gabriela Correa", table:6},
+    {name:"Pablo Castellanos", table:6},
+    {name:"Alison Castellanos", table:6},
+    {name:"Miles", table:6},
+    {name:"Arlyn", table:6},
+    {name:"Adalyn Palacios", table:6},
+    {name:"Oscar", table:6},
+    {name:"Joanne Palacios", table:6},
+    // Mesa 7 (8)
+    {name:"Oswuy Vazquez", table:7},
+    {name:"Sebastian Rosano", table:7},
+    {name:"Emi", table:7},
+    {name:"Emi Invitado 1", table:7},
+    {name:"Lisseth Zamora", table:7},
+    {name:"Owen", table:7},
+    {name:"Anthony Garcia", table:7},
+    {name:"Anthony Invitado 1", table:7},
+    // Mesa 8 (8)
+    {name:"Lily", table:8},
+    {name:"Nailea", table:8},
+    {name:"Armida", table:8},
+    {name:"Mia", table:8},
+    {name:"Roberto", table:8},
+    {name:"Tonita", table:8},
+    {name:"Jorge", table:8},
+    {name:"Elidia Ibarra", table:8},
+    // Mesa 9 (7)
+    {name:"Juan", table:9},
+    {name:"Juan Invitado 1", table:9},
+    {name:"Juan Invitado 2", table:9},
+    {name:"Alma", table:9},
+    {name:"Alma Invitado 1", table:9},
+    {name:"Alma Invitado 2", table:9},
+    {name:"Andres Marin", table:9},
+    // Mesa 10 (7)
+    {name:"Ana", table:10},
+    {name:"Ana Invitado 1", table:10},
+    {name:"Ana Invitado 2", table:10},
+    {name:"Ana Invitado 3", table:10},
+    {name:"Cristian", table:10},
+    {name:"Cristian", table:10},
+    {name:"Pedro", table:10},
+    // Mesa 11 (12)
+    {name:"Aurora", table:11},
+    {name:"Ruben", table:11},
+    {name:"Jeylen", table:11},
+    {name:"Dylan", table:11},
+    {name:"Diva", table:11},
+    {name:"Roger", table:11},
+    {name:"Diego", table:11},
+    {name:"Esmeralda", table:11},
+    // Mesa 12 (9)
+    {name:"Juan", table:12},
+    {name:"Jaime", table:12},
+    {name:"Geo", table:12},
+    {name:"Alma", table:12},
+    {name:"Pedro", table:12},
+    {name:"Junior", table:12},
+    {name:"Aiden", table:12},
+    {name:"Jasmine", table:12},
+    {name:"Angel", table:12},
+    // Mesa 13 (8)
+    {name:"Angeles", table:13},
+    {name:"Ana Diaz", table:13},
+    {name:"Juan Maldonado", table:13},
+    {name:"Diana", table:13},
+    {name:"Marina Elias", table:13},
+    {name:"Martin Elias", table:13},
+    {name:"Angi", table:13},
+    {name:"Ian", table:13},
+    // Mesa 14 (8)
+    {name:"Jocelyn", table:14},
+    {name:"Lizbeth", table:14},
+    {name:"Juan", table:14},
+    {name:"Sherlyn", table:14},
+    {name:"Emily Rodriguez", table:14},
+    {name:"Maria Rodriguez", table:14},
+    {name:"Susana", table:14},
+    {name:"Kimmell", table:14},
+    // Mesa 15 (9)
+    {name:"Samantha Vizcarra", table:15},
+    {name:"Yazmin Maradiaga", table:15},
+    {name:"Brooklyn", table:15},
+    {name:"Tahlia Gonzalez", table:15},
+    {name:"Natalia Rodriguez", table:15},
+    {name:"Jacqueline Moreno", table:15},
+    {name:"Genesis Cruz", table:15},
+    {name:"Brianna Ibarra", table:15},
+    {name:"Elizah Rodriguez", table:15},
+    // Mesa 16 (8)
+    {name:"Aryana Rocha", table:16},
+    {name:"Audrina Barraza", table:16},
+    {name:"Camila Oscegueda", table:16},
+    {name:"Maria Ramos", table:16},
+    {name:"Briza Suarez", table:16},
+    {name:"Nathan Garcia", table:16},
+    {name:"Fernando Chavez", table:16},
+    {name:"Derick", table:16},
+  ]
+};
+
+let appData = JSON.parse(JSON.stringify(SAMPLE));
+let currentGuest = null;
+let mediaStream = null;
+let mediaRecorder = null;
+let chunks = [];
+let recordedBlob = null;
+let timerInterval = null;
+let elapsedSec = 0;
+let resetTimeout = null;
+
+// ---------- party-night state: who has arrived + random friend-table seating ----------
+// Kept separate from appData (the host's guest list config) so resetting the
+// guest list doesn't accidentally wipe the night's check-in progress.
+const STATE_KEY = 'quince-party-state-v1';
+let partyState = { arrived: {}, friendAssignments: {} };
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STATE_KEY);
+    if(raw) partyState = JSON.parse(raw);
+  }catch(e){ console.error('state load failed', e); }
+}
+function saveState(){
+  try{ localStorage.setItem(STATE_KEY, JSON.stringify(partyState)); }
+  catch(e){ console.error('state save failed', e); }
+}
+function isArrived(name){
+  return !!partyState.arrived[normalize(name)];
+}
+function markArrived(name){
+  partyState.arrived[normalize(name)] = true;
+  saveState();
+}
+
+// ---------- persistence ----------
+// Uses localStorage because this page runs standalone on the tablet's browser
+// (outside the claude.ai artifact environment), so it needs to remember
+// settings across reloads on its own.
+async function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      appData = JSON.parse(raw);
+    } else {
+      await saveData();
+    }
+  }catch(e){
+    console.error('localStorage unavailable, using in-memory data only', e);
+  }
+  applyData();
+}
+async function saveData(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
+  catch(e){ console.error('save failed', e); }
+}
+function applyData(){
+  document.getElementById('celebrantTitle').textContent = appData.celebrantName;
+  document.getElementById('videoCelebrant').textContent = appData.celebrantName;
+  const portrait = document.getElementById('welcomePortrait');
+  if(appData.photoUrl){
+    portrait.src = appData.photoUrl;
+    portrait.alt = appData.celebrantName;
+    portrait.style.display = 'block';
+  } else {
+    portrait.style.display = 'none';
+  }
+  const bg = document.getElementById('bgImage');
+  const bgOpacity = (appData.backgroundOpacity != null ? appData.backgroundOpacity : 20) / 100;
+  if(appData.backgroundUrl){
+    bg.style.backgroundImage = `url(${appData.backgroundUrl})`;
+    bg.style.opacity = bgOpacity;
+    bg.style.display = 'block';
+  } else {
+    // No custom upload — try the default file shipped alongside this page.
+    // Tries a few common filename/extension spellings so it just works.
+    const candidates = ['bgCaroline.jpg', 'bgCaroline.jpeg', 'bgCaroline.JPG', 'bgCaroline.png'];
+    tryBackgroundCandidates(candidates, 0, bg, bgOpacity);
+  }
+}
+
+function tryBackgroundCandidates(list, i, bg, bgOpacity){
+  if(i >= list.length){ bg.style.display = 'none'; return; }
+  const testImg = new Image();
+  testImg.onload = ()=>{
+    bg.style.backgroundImage = `url('${list[i]}')`;
+    bg.style.opacity = bgOpacity;
+    bg.style.display = 'block';
+  };
+  testImg.onerror = ()=> tryBackgroundCandidates(list, i+1, bg, bgOpacity);
+  testImg.src = list[i];
+}
+
+// ---------- screen management ----------
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function normalize(str){
+  return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ');
+}
+
+function findMatches(input){
+  const n = normalize(input);
+  if(!n) return [];
+  return appData.guests.filter(g=>{
+    const gn = normalize(g.name);
+    if(gn === n) return true;
+    if(gn.includes(n) || n.includes(gn)) return true;
+    return gn.split(' ').some(part => part.startsWith(n) && n.length>=2);
+  });
+}
+
+let notFoundAttempts = 0;
+
+function resetToWelcome(){
+  clearTimeout(resetTimeout);
+  document.getElementById('nameInput').value = '';
+  currentGuest = null;
+  notFoundAttempts = 0;
+  showScreen('screen-welcome');
+  setTimeout(()=>document.getElementById('nameInput').focus(), 200);
+}
+
+function retryFind(){
+  document.getElementById('nameInput').value = '';
+  showScreen('screen-welcome');
+  setTimeout(()=>document.getElementById('nameInput').focus(), 200);
+}
+
+document.getElementById('findBtn').addEventListener('click', handleFind);
+document.getElementById('nameInput').addEventListener('keydown', e=>{ if(e.key==='Enter') handleFind(); });
+
+function handleFind(){
+  const val = document.getElementById('nameInput').value;
+  const matches = findMatches(val);
+  if(matches.length === 0){
+    notFoundAttempts++;
+    if(notFoundAttempts >= 3){
+      notFoundAttempts = 0;
+      sendToOverflow(val.trim());
+    } else {
+      showScreen('screen-notfound');
+    }
+  } else if(matches.length === 1){
+    selectGuest(matches[0]);
+  } else if(matches.length <= 6){
+    const list = document.getElementById('matchList');
+    list.innerHTML = '';
+    matches.forEach(g=>{
+      const btn = document.createElement('div');
+      btn.className = 'match-item';
+      const label = 'Mesa ' + g.table + (TABLE_NAMES[g.table] ? ' · ' + TABLE_NAMES[g.table] : '');
+      btn.textContent = g.name + ' — ' + label;
+      btn.addEventListener('click', ()=>selectGuest(g));
+      list.appendChild(btn);
+    });
+    showScreen('screen-match');
+  } else {
+    selectGuest(matches[0]);
+  }
+}
+document.getElementById('matchBack').addEventListener('click', resetToWelcome);
+document.getElementById('notfoundRetryBtn').addEventListener('click', retryFind);
+
+let currentTablemates = [];
+
+function renderTablemates(list){
+  currentTablemates = list;
+  const ul = document.getElementById('tablematesList');
+  ul.innerHTML = '';
+  if(list.length === 0){
+    ul.innerHTML = '<li class="empty-note">Eres el primero en llegar — ¡más amigos vienen en camino!<br><span style="font-size:.8em;">You\'re the first one here — more friends are on the way!</span></li>';
+    return;
+  }
+  list.forEach(o=>{
+    const li = document.createElement('li');
+    const arrived = isArrived(o.name);
+    if(arrived){
+      li.className = 'arrived';
+      li.innerHTML = '<span class="check-icon done">\u2713</span>' + o.name;
+    } else {
+      li.className = 'tappable';
+      li.innerHTML = '<span class="check-icon"></span>' + o.name;
+      li.addEventListener('click', ()=>{
+        markArrived(o.name);
+        renderTablemates(currentTablemates);
+      });
+    }
+    ul.appendChild(li);
+  });
+}
+
+function selectGuest(guest){
+  markArrived(guest.name);
+  currentGuest = { name: guest.name, table: guest.table };
+
+  document.getElementById('resultName').textContent = guest.name;
+  document.getElementById('resultTableNum').textContent = guest.table;
+  document.getElementById('resultTableName').textContent = TABLE_NAMES[guest.table] || '';
+
+  const others = appData.guests.filter(g => g.table === guest.table && g.name !== guest.name);
+  renderTablemates(others);
+  showScreen('screen-result');
+}
+
+// ---------- Table 17: for anyone not found on the guest list ----------
+// Seats them straight at Table 17 with no "not found" messaging at all.
+function sendToOverflow(name){
+  if(!name) return;
+  if(!partyState.overflowGuests) partyState.overflowGuests = [];
+  const key = normalize(name);
+  if(!partyState.overflowGuests.some(n => normalize(n) === key)){
+    partyState.overflowGuests.push(name);
+  }
+  markArrived(name);
+  saveState();
+  currentGuest = { name, table: 17 };
+
+  document.getElementById('resultName').textContent = name;
+  document.getElementById('resultTableNum').textContent = 17;
+  document.getElementById('resultTableName').textContent = TABLE_NAMES[17] || '';
+
+  const others = partyState.overflowGuests.filter(n => normalize(n) !== key).map(n => ({ name: n }));
+  renderTablemates(others);
+  showScreen('screen-result');
+}
+
+document.getElementById('skipBtn').addEventListener('click', ()=>{
+  document.getElementById('thankyouSub').innerHTML = 'Disfruta la celebraci\u00f3n \uD83C\uDF89<span class="en">Enjoy the celebration</span>';
+  showScreen('screen-thankyou');
+  resetTimeout = setTimeout(resetToWelcome, 4000);
+});
+
+// ---------- video recording ----------
+document.getElementById('toVideoBtn').addEventListener('click', startVideoScreen);
+
+async function startVideoScreen(){
+  showScreen('screen-video');
+  resetVideoUI();
+  try{
+    mediaStream = await navigator.mediaDevices.getUserMedia({video:true, audio:true});
+    const preview = document.getElementById('preview');
+    preview.srcObject = mediaStream;
+    preview.muted = true;
+  }catch(err){
+    document.getElementById('videoHint').innerHTML = "No pudimos acceder a la c\u00e1mara. Puedes omitir este paso.<span class=\"en\">We couldn't access the camera. You can still skip ahead.</span>";
+  }
+}
+
+function resetVideoUI(){
+  chunks = [];
+  recordedBlob = null;
+  elapsedSec = 0;
+  document.getElementById('timerText').textContent = '0:00';
+  document.getElementById('recBtn').classList.remove('recording');
+  document.getElementById('recordControls').style.display = 'flex';
+  document.getElementById('reviewControls').style.display = 'none';
+  document.getElementById('videoHint').innerHTML = "Tienes hasta 60 segundos. Presiona el bot\u00f3n para grabar.<span class=\"en\">You've got up to 60 seconds. Press the button to start recording.</span>";
+}
+
+document.getElementById('recBtn').addEventListener('click', ()=>{
+  const btn = document.getElementById('recBtn');
+  if(!btn.classList.contains('recording')){
+    startRecording();
+  } else {
+    stopRecording();
+  }
+});
+
+function startRecording(){
+  if(!mediaStream) return;
+  chunks = [];
+  try{
+    mediaRecorder = new MediaRecorder(mediaStream, {mimeType: pickMime()});
+  }catch(e){
+    mediaRecorder = new MediaRecorder(mediaStream);
+  }
+  mediaRecorder.ondataavailable = e => { if(e.data && e.data.size>0) chunks.push(e.data); };
+  mediaRecorder.onstop = onRecordingStopped;
+  mediaRecorder.start();
+  document.getElementById('recBtn').classList.add('recording');
+  document.getElementById('videoHint').innerHTML = 'Grabando... <span class="en">Recording...</span>';
+  elapsedSec = 0;
+  timerInterval = setInterval(()=>{
+    elapsedSec++;
+    const m = Math.floor(elapsedSec/60), s = elapsedSec%60;
+    document.getElementById('timerText').textContent = m + ':' + String(s).padStart(2,'0');
+    if(elapsedSec >= 60) stopRecording();
+  }, 1000);
+}
+
+function pickMime(){
+  const options = ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'];
+  for(const o of options){ if(window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(o)) return o; }
+  return '';
+}
+
+function stopRecording(){
+  clearInterval(timerInterval);
+  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  document.getElementById('recBtn').classList.remove('recording');
+}
+
+function onRecordingStopped(){
+  recordedBlob = new Blob(chunks, {type: mediaRecorder.mimeType || 'video/webm'});
+  const preview = document.getElementById('preview');
+  preview.srcObject = null;
+  preview.src = URL.createObjectURL(recordedBlob);
+  preview.muted = false;
+  preview.controls = true;
+  preview.play();
+  document.getElementById('recordControls').style.display = 'none';
+  document.getElementById('reviewControls').style.display = 'flex';
+  document.getElementById('videoHint').innerHTML = '¡Qu\u00e9 bonito! M\u00edralo abajo.<span class="en">Nice! Watch it back below.</span>';
+}
+
+document.getElementById('retakeBtn').addEventListener('click', ()=>{
+  const preview = document.getElementById('preview');
+  preview.controls = false;
+  preview.src = '';
+  preview.srcObject = mediaStream;
+  preview.muted = true;
+  resetVideoUI();
+});
+
+document.getElementById('saveVideoBtn').addEventListener('click', ()=>{
+  if(!recordedBlob) return;
+  const safeName = (currentGuest ? currentGuest.name : 'guest').replace(/[^a-z0-9]+/gi,'_');
+  const table = currentGuest ? currentGuest.table : 'x';
+  const filename = `${safeName}_table${table}_message.webm`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(recordedBlob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  finishVideo('Tu mensaje fue guardado. ¡Gracias por tus palabras! \uD83D\uDC96', "Your message was saved. Thank you for the sweet words \uD83D\uDC96");
+});
+
+document.getElementById('cancelVideoBtn').addEventListener('click', ()=>{
+  finishVideo('Disfruta la celebraci\u00f3n \uD83C\uDF89', 'Enjoy the celebration \uD83C\uDF89');
+});
+
+function finishVideo(esMessage, enMessage){
+  stopMediaStream();
+  document.getElementById('thankyouSub').innerHTML = esMessage + '<span class="en">' + enMessage + '</span>';
+  showScreen('screen-thankyou');
+  resetTimeout = setTimeout(resetToWelcome, 4500);
+}
+
+function stopMediaStream(){
+  if(mediaStream){
+    mediaStream.getTracks().forEach(t=>t.stop());
+    mediaStream = null;
+  }
+}
+
+// Funny table names, keyed by table number
+const TABLE_NAMES = {
+  1:"Los Que Bailan Hasta el Final",
+  2:"Los Que Piden Otra Rola",
+  3:"Los Que Se Sientan Junto al Bar",
+  4:"Los T\u00edos Chistosos",
+  5:"Los Primos Traviesos",
+  6:"Los Chismosos",
+  7:"Los Que Todo lo Critican",
+  8:"Los Borrachos",
+  9:"Los Que Comen de Todo",
+  10:"Los Que Lloran en las Bodas/XV",
+  11:"Los Que Se Creen Cantantes",
+  12:"Los Que No Pueden Faltar",
+  13:"Los Que Toman Foto a Todo",
+  14:"Los Que Se Van Temprano",
+  15:"Los Bailadores de Zapateado",
+  16:"Los Que Siempre Llegan Tarde",
+  17:"Los Reci\u00e9n Llegados"
+};
+
+// ---------- seating map ----------
+// Approximate center of each numbered table as a % of the layout image's width/height.
+const TABLE_POSITIONS = {
+  1:{x:38.0, y:52.0}, 2:{x:51.5, y:52.0}, 3:{x:63.3, y:52.0},
+  4:{x:44.8, y:42.5}, 5:{x:58.5, y:42.5},
+  6:{x:38.0, y:32.8}, 7:{x:53.0, y:32.8}, 8:{x:64.5, y:32.8},
+  9:{x:44.8, y:24.3}, 10:{x:58.0, y:24.3},
+  11:{x:73.0, y:24.3}, 12:{x:37.8, y:16.2}, 13:{x:66.5, y:16.2},
+  14:{x:16.0, y:42.4}, 15:{x:16.0, y:32.0}, 16:{x:16.0, y:21.7}
+};
+let mapImageLoaded = false;
+loadMapImage(); // check for the layout image once at startup
+
+document.getElementById('viewMapBtn').addEventListener('click', ()=>{
+  if(!currentGuest) return;
+  openMap(currentGuest.table);
+});
+document.getElementById('mapCloseBtn').addEventListener('click', closeMap);
+document.getElementById('mapOverlay').addEventListener('click', (e)=>{ if(e.target.id==='mapOverlay') closeMap(); });
+
+function openMap(tableNum){
+  const overlay = document.getElementById('mapOverlay');
+  const highlight = document.getElementById('mapHighlight');
+  const pos = TABLE_POSITIONS[tableNum];
+  if(pos){
+    highlight.style.left = pos.x + '%';
+    highlight.style.top = pos.y + '%';
+    highlight.style.display = 'block';
+  } else {
+    highlight.style.display = 'none';
+  }
+  overlay.classList.add('active');
+  document.getElementById('mapCaption').textContent = 'Mesa ' + tableNum + (TABLE_NAMES[tableNum] ? ' \u00b7 ' + TABLE_NAMES[tableNum] : '');
+}
+function closeMap(){
+  document.getElementById('mapOverlay').classList.remove('active');
+}
+function loadMapImage(){
+  const candidates = ['layout.png', 'layout.jpg', 'layout.jpeg', 'layout.JPG'];
+  tryMapCandidates(candidates, 0);
+}
+function tryMapCandidates(list, i){
+  if(i >= list.length){
+    document.getElementById('viewMapBtn').style.display = 'none';
+    return;
+  }
+  const testImg = new Image();
+  testImg.onload = ()=>{
+    document.getElementById('mapImage').src = list[i];
+    mapImageLoaded = true;
+    document.getElementById('viewMapBtn').style.display = '';
+  };
+  testImg.onerror = ()=> tryMapCandidates(list, i+1);
+  testImg.src = list[i];
+}
+
+// ---------- settings access: invisible tap-zone + PIN ----------
+let tapCount = 0;
+let tapTimer = null;
+document.getElementById('tapZone').addEventListener('click', ()=>{
+  tapCount++;
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(()=>{ tapCount = 0; }, 2500);
+  if(tapCount >= 5){
+    tapCount = 0;
+    clearTimeout(tapTimer);
+    openPinModal();
+  }
+});
+
+function openPinModal(){
+  document.getElementById('pinInput').value = '';
+  document.getElementById('pinError').textContent = '\u00a0';
+  document.getElementById('pinOverlay').classList.add('active');
+  setTimeout(()=>document.getElementById('pinInput').focus(), 100);
+}
+function closePinModal(){
+  document.getElementById('pinOverlay').classList.remove('active');
+}
+document.getElementById('pinCancelBtn').addEventListener('click', closePinModal);
+document.getElementById('pinOverlay').addEventListener('click', (e)=>{ if(e.target.id==='pinOverlay') closePinModal(); });
+document.getElementById('pinInput').addEventListener('keydown', e=>{ if(e.key==='Enter') submitPin(); });
+document.getElementById('pinSubmitBtn').addEventListener('click', submitPin);
+
+function submitPin(){
+  const entered = document.getElementById('pinInput').value.trim();
+  const correctPin = appData.settingsPin || '1234';
+  if(entered === correctPin){
+    closePinModal();
+    openModal();
+  } else {
+    document.getElementById('pinError').textContent = 'PIN incorrecto \u00b7 Incorrect PIN';
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinInput').focus();
+  }
+}
+
+document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', (e)=>{ if(e.target.id==='modalOverlay') closeModal(); });
+
+let modalPhotoUrl = null;
+let modalBgUrl = null;
+
+function openModal(){
+  document.getElementById('celebrantInput').value = appData.celebrantName;
+  document.getElementById('pinChangeInput').value = appData.settingsPin || '1234';
+  document.getElementById('guestTextarea').value = appData.guests.map(g=>`${g.name}, ${g.table}`).join('\n');
+  modalPhotoUrl = appData.photoUrl || null;
+  modalBgUrl = appData.backgroundUrl || null;
+  document.getElementById('bgOpacityInput').value = appData.backgroundOpacity != null ? appData.backgroundOpacity : 20;
+  document.getElementById('bgOpacityValue').textContent = document.getElementById('bgOpacityInput').value;
+  updatePhotoPreview();
+  updateBgPreview();
+  checkCapacity();
+  document.getElementById('modalOverlay').classList.add('active');
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+function updatePhotoPreview(){
+  const wrap = document.getElementById('photoPreviewWrap');
+  if(modalPhotoUrl){
+    document.getElementById('photoPreview').src = modalPhotoUrl;
+    wrap.style.display = 'block';
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+document.getElementById('photoInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const maxDim = 500;
+      let w = img.width, h = img.height;
+      if(w > h && w > maxDim){ h = Math.round(h*maxDim/w); w = maxDim; }
+      else if(h > maxDim){ w = Math.round(w*maxDim/h); h = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      modalPhotoUrl = canvas.toDataURL('image/jpeg', 0.85);
+      updatePhotoPreview();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+document.getElementById('removePhotoBtn').addEventListener('click', ()=>{
+  modalPhotoUrl = null;
+  document.getElementById('photoInput').value = '';
+  updatePhotoPreview();
+});
+function updateBgPreview(){
+  const wrap = document.getElementById('bgPreviewWrap');
+  if(modalBgUrl){
+    document.getElementById('bgPreview').src = modalBgUrl;
+    wrap.style.display = 'block';
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+document.getElementById('bgInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const maxDim = 1600;
+      let w = img.width, h = img.height;
+      if(w > h && w > maxDim){ h = Math.round(h*maxDim/w); w = maxDim; }
+      else if(h > maxDim){ w = Math.round(w*maxDim/h); h = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      modalBgUrl = canvas.toDataURL('image/jpeg', 0.85);
+      updateBgPreview();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+document.getElementById('removeBgBtn').addEventListener('click', ()=>{
+  modalBgUrl = null;
+  document.getElementById('bgInput').value = '';
+  updateBgPreview();
+});
+document.getElementById('bgOpacityInput').addEventListener('input', (e)=>{
+  document.getElementById('bgOpacityValue').textContent = e.target.value;
+});
+document.getElementById('guestTextarea').addEventListener('input', checkCapacity);
+function checkCapacity(){
+  const lines = document.getElementById('guestTextarea').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  const counts = {};
+  lines.forEach(line=>{
+    const parts = line.split(',');
+    if(parts.length>=2){
+      const raw = parts[1].trim();
+      const table = parseInt(raw, 10);
+      if(!isNaN(table)) counts[table] = (counts[table]||0) + 1;
+    }
+  });
+  const over = Object.keys(counts).filter(t => counts[t] > 8);
+  const warn = document.getElementById('capacityWarning');
+  if(over.length){
+    warn.textContent = `Ojo — mesa${over.length>1?'s':''} ${over.join(', ')} ${over.length>1?'tienen':'tiene'} m\u00e1s de 8 invitados. / table${over.length>1?'s':''} ${over.join(', ')} over 8 guests.`;
+    warn.style.display = 'block';
+  } else {
+    warn.style.display = 'none';
+  }
+}
+document.getElementById('resetArrivalsBtn').addEventListener('click', ()=>{
+  partyState = { arrived: {}, friendAssignments: {} };
+  saveState();
+});
+document.getElementById('resetSampleBtn').addEventListener('click', ()=>{
+  document.getElementById('celebrantInput').value = SAMPLE.celebrantName;
+  document.getElementById('pinChangeInput').value = SAMPLE.settingsPin;
+  document.getElementById('guestTextarea').value = SAMPLE.guests.map(g=>`${g.name}, ${g.table}`).join('\n');
+  modalPhotoUrl = null;
+  modalBgUrl = null;
+  document.getElementById('bgOpacityInput').value = 20;
+  document.getElementById('bgOpacityValue').textContent = '20';
+  updatePhotoPreview();
+  updateBgPreview();
+  checkCapacity();
+});
+document.getElementById('saveModalBtn').addEventListener('click', async ()=>{
+  const celebrant = document.getElementById('celebrantInput').value.trim() || 'Caroline';
+  const lines = document.getElementById('guestTextarea').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  const guests = [];
+  lines.forEach(line=>{
+    const parts = line.split(',');
+    if(parts.length>=2){
+      const name = parts[0].trim();
+      const raw = parts[1].trim();
+      const n = parseInt(raw, 10);
+      if(name && !isNaN(n)) guests.push({name, table:n});
+    }
+  });
+  const pinValue = document.getElementById('pinChangeInput').value.trim();
+  appData = {
+    celebrantName: celebrant,
+    photoUrl: modalPhotoUrl,
+    backgroundUrl: modalBgUrl,
+    backgroundOpacity: parseInt(document.getElementById('bgOpacityInput').value, 10),
+    settingsPin: /^\d{4}$/.test(pinValue) ? pinValue : (appData.settingsPin || '1234'),
+    guests: guests.length? guests : SAMPLE.guests
+  };
+  await saveData();
+  applyData();
+  closeModal();
+  resetToWelcome();
+});
+
+// ---------- fullscreen ----------
+document.getElementById('fsBtn').addEventListener('click', ()=>{
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().catch(()=>{});
+  } else {
+    document.exitFullscreen().catch(()=>{});
+  }
+});
+
+// ---------- init ----------
+loadState();
+loadData().then(()=>{
+  document.getElementById('nameInput').focus();
+});
+</script>
+</body>
+</html>
