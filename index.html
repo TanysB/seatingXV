@@ -73,7 +73,7 @@
     50%{opacity:1; transform:scale(1.15);}
   }
   .eyebrow{
-    font-size:16px; letter-spacing:.22em; text-transform:uppercase;
+    font-size:19px; letter-spacing:.22em; text-transform:uppercase;
     color:var(--rose-dark); font-weight:600; margin-bottom:10px;
   }
   h1{
@@ -84,7 +84,7 @@
     line-height:1.08;
   }
   p.sub{
-    font-size:27px; color:var(--plum); max-width:620px; margin:0 auto 34px;
+    font-size:30px; color:var(--plum); max-width:640px; margin:0 auto 34px;
     line-height:1.5; font-weight:500;
   }
   .sub .en{
@@ -139,8 +139,8 @@
   .name-input{
     width:min(600px,90vw);
     font-family:'Poppins',sans-serif;
-    font-size:29px; font-weight:500;
-    padding:22px 26px;
+    font-size:31px; font-weight:500;
+    padding:24px 28px;
     border-radius:100px;
     border:2px solid var(--blush);
     outline:none;
@@ -167,8 +167,8 @@
 
   .btn{
     font-family:'Poppins',sans-serif;
-    font-weight:600; font-size:22px;
-    padding:20px 42px;
+    font-weight:600; font-size:25px;
+    padding:22px 44px;
     border-radius:100px;
     border:none;
     cursor:pointer;
@@ -186,7 +186,7 @@
   .match-list{display:flex; flex-direction:column; gap:12px; width:min(500px,90vw);}
   .match-item{
     background:#fff; border:2px solid var(--blush); border-radius:100px;
-    padding:20px 30px; font-size:25px; font-weight:600; color:var(--plum);
+    padding:22px 32px; font-size:28px; font-weight:600; color:var(--plum);
     cursor:pointer;
   }
   .match-item:active{background:var(--blush);}
@@ -265,7 +265,7 @@
   }
   .tablemates h3{margin:0 0 14px; font-size:14px; letter-spacing:.15em; text-transform:uppercase; color:var(--rose-dark); font-weight:700; text-align:center;}
   .tablemates h3 .en{display:block; font-size:0.78em; font-style:italic; color:var(--muted); text-transform:none; letter-spacing:0; margin-top:2px; font-weight:400;}
-  .tablemates ul{list-style:none; margin:0; padding:0; font-size:24px; color:var(--plum); font-weight:600;}
+  .tablemates ul{list-style:none; margin:0; padding:0; font-size:27px; color:var(--plum); font-weight:600;}
   .tablemates li{padding:8px 4px; border-top:1px solid var(--blush);}
   .tablemates li:first-child{border-top:none;}
   .tablemates li.arrived{color:var(--arrived); font-weight:700;}
@@ -362,6 +362,25 @@
   }
   .fullscreen-btn svg{width:18px;height:18px;fill:var(--plum);}
 
+  .scroll-hint{
+    position:fixed; bottom:14px; left:50%; transform:translateX(-50%);
+    z-index:18; pointer-events:none;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    background:rgba(91,42,70,0.85);
+    color:#fff; padding:8px 18px; border-radius:100px;
+    font-family:'Poppins',sans-serif; font-size:14px; font-weight:600;
+    box-shadow:0 8px 20px rgba(91,42,70,.3);
+  }
+  .scroll-hint .en{display:block; font-size:0.8em; font-weight:400; font-style:italic; opacity:.85;}
+  .scroll-arrow{
+    font-size:20px; line-height:1;
+    animation:scrollBounce 1.2s ease-in-out infinite;
+  }
+  @keyframes scrollBounce{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(6px);}
+  }
+
   .modal-overlay{
     position:fixed; inset:0; background:rgba(91,42,70,.55);
     z-index:50; display:none; align-items:center; justify-content:center;
@@ -424,6 +443,10 @@
 <button class="fullscreen-btn" id="fsBtn" title="Full screen" aria-label="Full screen">
   <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
 </button>
+<div class="scroll-hint" id="scrollHint" style="display:none;">
+  <span>Desliza hacia abajo<span class="en">Scroll down</span></span>
+  <div class="scroll-arrow">&#8964;</div>
+</div>
 
 <div id="app">
 
@@ -498,7 +521,7 @@
     </div>
     <div class="btn-row" id="reviewControls" style="display:none;">
       <button class="btn btn-secondary" id="retakeBtn">Repetir &middot; Retake</button>
-      <button class="btn btn-primary" id="saveVideoBtn">Guardar &middot; Save &amp; Finish</button>
+      <button class="btn btn-primary" id="saveVideoBtn">Continuar &middot; Continue</button>
     </div>
     <button class="btn-ghost" id="cancelVideoBtn">Cancelar y Omitir &middot; Cancel and Skip</button>
   </section>
@@ -583,7 +606,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'quince-checkin-data-v17';
+const STORAGE_KEY = 'quince-checkin-data-v19';
 
 const SAMPLE = {
   celebrantName: "Caroline",
@@ -844,7 +867,22 @@ function tryBackgroundCandidates(list, i, bg, bgOpacity){
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  requestAnimationFrame(updateScrollHint);
+  setTimeout(updateScrollHint, 300); // catch late-loading content (images, etc.)
 }
+
+function updateScrollHint(){
+  const active = document.querySelector('.screen.active');
+  const hint = document.getElementById('scrollHint');
+  if(!active || !hint) return;
+  const overflowing = active.scrollHeight > active.clientHeight + 30;
+  const nearBottom = active.scrollTop + active.clientHeight >= active.scrollHeight - 30;
+  hint.style.display = (overflowing && !nearBottom) ? 'flex' : 'none';
+}
+document.querySelectorAll('.screen').forEach(s=>{
+  s.addEventListener('scroll', updateScrollHint);
+});
+window.addEventListener('resize', updateScrollHint);
 
 function normalize(str){
   return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ');
@@ -931,6 +969,7 @@ function renderTablemates(list){
   ul.innerHTML = '';
   if(list.length === 0){
     ul.innerHTML = '<li class="empty-note">Eres el primero en llegar — ¡más amigos vienen en camino!<br><span style="font-size:.8em;">You\'re the first one here — more friends are on the way!</span></li>';
+    requestAnimationFrame(updateScrollHint);
     return;
   }
   list.forEach(o=>{
@@ -957,6 +996,7 @@ function renderTablemates(list){
     }
     ul.appendChild(li);
   });
+  requestAnimationFrame(updateScrollHint);
 }
 
 // Commits everyone currently selected (tapped) as arrived, permanently, and
@@ -1113,7 +1153,21 @@ function onRecordingStopped(){
   preview.play();
   document.getElementById('recordControls').style.display = 'none';
   document.getElementById('reviewControls').style.display = 'flex';
-  document.getElementById('videoHint').innerHTML = '¡Qu\u00e9 bonito! M\u00edralo abajo.<span class="en">Nice! Watch it back below.</span>';
+  document.getElementById('videoHint').innerHTML = '&iexcl;Ya se guard&oacute;! M&iacute;ralo abajo.<span class="en">Already saved! Watch it back below.</span>';
+  downloadRecordedVideo(); // saves automatically, no extra tap needed
+}
+
+function downloadRecordedVideo(){
+  if(!recordedBlob) return;
+  const safeName = (currentGuest ? currentGuest.name : 'guest').replace(/[^a-z0-9]+/gi,'_');
+  const table = currentGuest ? currentGuest.table : 'x';
+  const filename = `${safeName}_table${table}_message.webm`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(recordedBlob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 }
 
 document.getElementById('retakeBtn').addEventListener('click', ()=>{
@@ -1126,16 +1180,6 @@ document.getElementById('retakeBtn').addEventListener('click', ()=>{
 });
 
 document.getElementById('saveVideoBtn').addEventListener('click', ()=>{
-  if(!recordedBlob) return;
-  const safeName = (currentGuest ? currentGuest.name : 'guest').replace(/[^a-z0-9]+/gi,'_');
-  const table = currentGuest ? currentGuest.table : 'x';
-  const filename = `${safeName}_table${table}_message.webm`;
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(recordedBlob);
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
   finishVideo('Tu mensaje fue guardado. ¡Gracias por tus palabras! \uD83D\uDC96', "Your message was saved. Thank you for the sweet words \uD83D\uDC96");
 });
 
