@@ -58,8 +58,19 @@
   .screen.active{display:flex;}
 
   .sparkle-row{
-    font-size:20px; color:var(--gold); letter-spacing:.5em;
-    margin-bottom:10px; opacity:.85;
+    font-size:22px; color:var(--gold); letter-spacing:.5em;
+    margin-bottom:10px;
+  }
+  .sparkle-row span{
+    display:inline-block;
+    animation:twinkle 1.8s ease-in-out infinite;
+  }
+  .sparkle-row span:nth-child(1){animation-delay:0s;}
+  .sparkle-row span:nth-child(2){animation-delay:.3s;}
+  .sparkle-row span:nth-child(3){animation-delay:.6s;}
+  @keyframes twinkle{
+    0%,100%{opacity:.35; transform:scale(0.85);}
+    50%{opacity:1; transform:scale(1.15);}
   }
   .eyebrow{
     font-size:16px; letter-spacing:.22em; text-transform:uppercase;
@@ -137,9 +148,22 @@
     background:#fff;
     color:var(--ink);
     box-shadow:0 8px 24px rgba(227,164,196,0.25);
+    animation:inputGlow 2.6s ease-in-out infinite;
   }
   .name-input::placeholder{color:#c9a7bb;}
-  .name-input:focus{border-color:var(--rose);}
+  .name-input:focus{border-color:var(--rose); animation:none;}
+  .tap-hint{
+    font-size:32px; margin-bottom:6px;
+    animation:bounceHint 1.4s ease-in-out infinite;
+  }
+  @keyframes bounceHint{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(10px);}
+  }
+  @keyframes inputGlow{
+    0%,100%{ box-shadow:0 8px 24px rgba(227,164,196,0.25), 0 0 0 0 rgba(198,161,92,0.35); }
+    50%{ box-shadow:0 8px 24px rgba(227,164,196,0.25), 0 0 0 10px rgba(198,161,92,0); }
+  }
 
   .btn{
     font-family:'Poppins',sans-serif;
@@ -262,8 +286,18 @@
     border-color:var(--arrived); background:var(--arrived);
     color:#fff; text-align:center; line-height:16px; font-size:12px; font-weight:700;
   }
+  .check-icon.pending{
+    border-color:var(--gold); background:var(--gold);
+    color:#fff; text-align:center; line-height:16px; font-size:12px; font-weight:700;
+  }
   .tablemates li.tappable{cursor:pointer;}
   .tablemates li.tappable:active{background:var(--blush);}
+  .tablemates li.selected{color:var(--gold); font-weight:700;}
+  .different-table-note{
+    font-size:13px; color:var(--muted); font-style:italic; text-align:center;
+    margin:14px 0 0; line-height:1.4;
+  }
+  .different-table-note .en{display:block; margin-top:2px;}
   .empty-note{color:var(--muted); font-size:19px; font-style:italic; text-align:center;}
 
   /* Video screen */
@@ -396,11 +430,12 @@
   <!-- WELCOME -->
   <section class="screen active" id="screen-welcome">
     <div class="fifteen-mark">XV</div>
-    <div class="sparkle-row">&#10022;&nbsp;&#10022;&nbsp;&#10022;</div>
+    <div class="sparkle-row"><span>&#10022;</span>&nbsp;<span>&#10022;</span>&nbsp;<span>&#10022;</span></div>
     <div class="eyebrow">Bienvenidos &middot; Welcome</div>
     <img class="portrait" id="welcomePortrait" src="" alt="" style="display:none;">
     <h1 id="welcomeTitle"><span class="celebrant-script" id="celebrantTitle">Caroline</span><span class="xv-sub">XV A&ntilde;os</span></h1>
     <p class="sub">Escribe tu nombre para encontrar tu mesa<span class="en">Type your name to find your table</span></p>
+    <div class="tap-hint">&#128071;</div>
     <input type="text" class="name-input" id="nameInput" placeholder="Tu nombre completo &middot; Your full name" autocomplete="off">
     <div>
       <button class="btn btn-primary" id="findBtn">Buscar Mi Mesa &middot; Find My Seat</button>
@@ -438,8 +473,9 @@
       <div class="card-divider"><span>&#10022;</span></div>
       <div class="tablemates">
         <h3>Sentados contigo<span class="en">Sitting with you</span></h3>
-        <p class="tap-instruction">&#128070; &iquest;Llegaron contigo? Toca sus nombres<span class="en">Arrived with you? Tap their names</span></p>
+        <p class="tap-instruction">&#128070; &iquest;Llegaron contigo? Toca sus nombres (puedes destocar antes de continuar)<span class="en">Arrived with you? Tap their names (tap again to undo before you continue)</span></p>
         <ul id="tablematesList"></ul>
+        <p class="different-table-note">&iquest;No ves a alguien de tu grupo? Probablemente est&aacute; en otra mesa.<span class="en">Don't see someone from your group? They're probably seated at a different table.</span></p>
       </div>
     </div>
     <div class="btn-row">
@@ -474,6 +510,7 @@
     </div>
     <h1 style="font-size:40px;">&iexcl;Gracias! &middot; Thank you!</h1>
     <p class="sub" id="thankyouSub">Disfruta la celebraci&oacute;n &#127881;<span class="en">Enjoy the celebration</span></p>
+    <button class="btn btn-primary" id="nextGuestBtn">Siguiente Invitado &middot; Next Guest</button>
   </section>
 
 </div>
@@ -546,7 +583,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'quince-checkin-data-v6';
+const STORAGE_KEY = 'quince-checkin-data-v17';
 
 const SAMPLE = {
   celebrantName: "Caroline",
@@ -583,7 +620,7 @@ const SAMPLE = {
     {name:"Mario", table:3},
     // Mesa 4 (8)
     {name:"Adriana", table:4},
-    {name:"Ian", table:4},
+    {name:"Ian Galvez", table:4},
     {name:"Axel", table:4},
     {name:"Axel Invitado 1", table:4},
     {name:"Axel Invitado 2", table:4},
@@ -626,21 +663,25 @@ const SAMPLE = {
     {name:"Jorge", table:8},
     {name:"Elidia Ibarra", table:8},
     // Mesa 9 (7)
-    {name:"Juan", table:9},
-    {name:"Juan Invitado 1", table:9},
-    {name:"Juan Invitado 2", table:9},
-    {name:"Alma", table:9},
-    {name:"Alma Invitado 1", table:9},
-    {name:"Alma Invitado 2", table:9},
+    {name:"Juan (MPA)", table:9},
+    {name:"Juan (MPA) Invitado 1", table:9},
+    {name:"Juan (MPA) Invitado 2", table:9},
+    {name:"Alma (MPA)", table:9},
+    {name:"Alma (MPA) Invitado 1", table:9},
+    {name:"Alma (MPA) Invitado 2", table:9},
     {name:"Andres Marin", table:9},
+    {name:"Gina Larios Rodriguez", table:9},
+    {name:"Alex Georgina Marin Larios", table:9},
     // Mesa 10 (7)
-    {name:"Ana", table:10},
-    {name:"Ana Invitado 1", table:10},
-    {name:"Ana Invitado 2", table:10},
-    {name:"Ana Invitado 3", table:10},
-    {name:"Cristian", table:10},
-    {name:"Cristian", table:10},
-    {name:"Pedro", table:10},
+    {name:"Ana Carpio", table:10},
+    {name:"Ana Carpio Invitado 1", table:10},
+    {name:"Ana Carpio Invitado 2", table:10},
+    {name:"Ana Carpio Invitado 3", table:10},
+    {name:"Cristian (MPA)", table:10},
+    {name:"Cristian (MPA) Invitado 1", table:10},
+    {name:"Pedro (MPA)", table:10},
+    {name:"Pedro (MPA) Invitado 1", table:10},
+    {name:"Pedro (MPA) Invitado 2", table:10},
     // Mesa 11 (12)
     {name:"Aurora", table:11},
     {name:"Ruben", table:11},
@@ -654,8 +695,8 @@ const SAMPLE = {
     {name:"Juan", table:12},
     {name:"Jaime", table:12},
     {name:"Geo", table:12},
-    {name:"Alma", table:12},
-    {name:"Pedro", table:12},
+    {name:"Alma Pacheco", table:12},
+    {name:"Pedro Pacheco", table:12},
     {name:"Junior", table:12},
     {name:"Aiden", table:12},
     {name:"Jasmine", table:12},
@@ -672,7 +713,7 @@ const SAMPLE = {
     // Mesa 14 (8)
     {name:"Jocelyn", table:14},
     {name:"Lizbeth", table:14},
-    {name:"Juan", table:14},
+    {name:"Juan Rodriguez", table:14},
     {name:"Sherlyn", table:14},
     {name:"Emily Rodriguez", table:14},
     {name:"Maria Rodriguez", table:14},
@@ -697,6 +738,13 @@ const SAMPLE = {
     {name:"Nathan Garcia", table:16},
     {name:"Fernando Chavez", table:16},
     {name:"Derick", table:16},
+    // Possible/unconfirmed guests — may or may not show up. If they do, seat at Mesa 17.
+    {name:"Emily Bautista", table:17},
+    {name:"Emily Bautista Invitado 1", table:17},
+    {name:"Emily Bautista Invitado 2", table:17},
+    {name:"Melanie Sandoval", table:17},
+    {name:"Leslie Oscegueda", table:17},
+    {name:"Brian", table:17},
   ]
 };
 
@@ -808,8 +856,9 @@ function findMatches(input){
   return appData.guests.filter(g=>{
     const gn = normalize(g.name);
     if(gn === n) return true;
-    if(gn.includes(n) || n.includes(gn)) return true;
-    return gn.split(' ').some(part => part.startsWith(n) && n.length>=2);
+    if(n.includes(gn)) return true; // guest's full name is contained in what they typed
+    // match a whole word exactly, e.g. "juan" matches "Juan Maldonado" but not "Juanita"
+    return gn.split(' ').some(part => part === n);
   });
 }
 
@@ -820,9 +869,13 @@ function resetToWelcome(){
   document.getElementById('nameInput').value = '';
   currentGuest = null;
   notFoundAttempts = 0;
+  pendingArrivals = new Set();
+  const hint = document.querySelector('.tap-hint');
+  if(hint) hint.style.display = '';
   showScreen('screen-welcome');
   setTimeout(()=>document.getElementById('nameInput').focus(), 200);
 }
+document.getElementById('nextGuestBtn').addEventListener('click', resetToWelcome);
 
 function retryFind(){
   document.getElementById('nameInput').value = '';
@@ -832,6 +885,10 @@ function retryFind(){
 
 document.getElementById('findBtn').addEventListener('click', handleFind);
 document.getElementById('nameInput').addEventListener('keydown', e=>{ if(e.key==='Enter') handleFind(); });
+document.getElementById('nameInput').addEventListener('input', ()=>{
+  const hint = document.querySelector('.tap-hint');
+  if(hint) hint.style.display = 'none';
+});
 
 function handleFind(){
   const val = document.getElementById('nameInput').value;
@@ -866,6 +923,7 @@ document.getElementById('matchBack').addEventListener('click', resetToWelcome);
 document.getElementById('notfoundRetryBtn').addEventListener('click', retryFind);
 
 let currentTablemates = [];
+let pendingArrivals = new Set();
 
 function renderTablemates(list){
   currentTablemates = list;
@@ -878,14 +936,22 @@ function renderTablemates(list){
   list.forEach(o=>{
     const li = document.createElement('li');
     const arrived = isArrived(o.name);
+    const key = normalize(o.name);
     if(arrived){
       li.className = 'arrived';
       li.innerHTML = '<span class="check-icon done">\u2713</span>' + o.name;
+    } else if(pendingArrivals.has(key)){
+      li.className = 'tappable selected';
+      li.innerHTML = '<span class="check-icon pending">\u2713</span>' + o.name;
+      li.addEventListener('click', ()=>{
+        pendingArrivals.delete(key);
+        renderTablemates(currentTablemates);
+      });
     } else {
       li.className = 'tappable';
       li.innerHTML = '<span class="check-icon"></span>' + o.name;
       li.addEventListener('click', ()=>{
-        markArrived(o.name);
+        pendingArrivals.add(key);
         renderTablemates(currentTablemates);
       });
     }
@@ -893,15 +959,44 @@ function renderTablemates(list){
   });
 }
 
+// Commits everyone currently selected (tapped) as arrived, permanently, and
+// clears the pending set so the next guest starts with a clean slate.
+function commitPendingArrivals(){
+  pendingArrivals.forEach(key=>{
+    const match = currentTablemates.find(o => normalize(o.name) === key);
+    if(match) markArrived(match.name);
+  });
+  pendingArrivals.clear();
+}
+
+function getTable17Others(excludeName){
+  const excludeKey = normalize(excludeName);
+  const named = appData.guests
+    .filter(g => g.table === 17 && normalize(g.name) !== excludeKey)
+    .map(g => g.name);
+  const walkIns = (partyState.overflowGuests || [])
+    .filter(n => normalize(n) !== excludeKey);
+  const seen = new Set();
+  const combined = [];
+  [...named, ...walkIns].forEach(n=>{
+    const k = normalize(n);
+    if(!seen.has(k)){ seen.add(k); combined.push({ name: n }); }
+  });
+  return combined;
+}
+
 function selectGuest(guest){
   markArrived(guest.name);
+  pendingArrivals = new Set();
   currentGuest = { name: guest.name, table: guest.table };
 
   document.getElementById('resultName').textContent = guest.name;
   document.getElementById('resultTableNum').textContent = guest.table;
   document.getElementById('resultTableName').textContent = TABLE_NAMES[guest.table] || '';
 
-  const others = appData.guests.filter(g => g.table === guest.table && g.name !== guest.name);
+  const others = guest.table === 17
+    ? getTable17Others(guest.name)
+    : appData.guests.filter(g => g.table === guest.table && g.name !== guest.name);
   renderTablemates(others);
   showScreen('screen-result');
 }
@@ -916,6 +1011,7 @@ function sendToOverflow(name){
     partyState.overflowGuests.push(name);
   }
   markArrived(name);
+  pendingArrivals = new Set();
   saveState();
   currentGuest = { name, table: 17 };
 
@@ -923,19 +1019,22 @@ function sendToOverflow(name){
   document.getElementById('resultTableNum').textContent = 17;
   document.getElementById('resultTableName').textContent = TABLE_NAMES[17] || '';
 
-  const others = partyState.overflowGuests.filter(n => normalize(n) !== key).map(n => ({ name: n }));
-  renderTablemates(others);
+  renderTablemates(getTable17Others(name));
   showScreen('screen-result');
 }
 
 document.getElementById('skipBtn').addEventListener('click', ()=>{
+  commitPendingArrivals();
   document.getElementById('thankyouSub').innerHTML = 'Disfruta la celebraci\u00f3n \uD83C\uDF89<span class="en">Enjoy the celebration</span>';
   showScreen('screen-thankyou');
   resetTimeout = setTimeout(resetToWelcome, 4000);
 });
 
 // ---------- video recording ----------
-document.getElementById('toVideoBtn').addEventListener('click', startVideoScreen);
+document.getElementById('toVideoBtn').addEventListener('click', ()=>{
+  commitPendingArrivals();
+  startVideoScreen();
+});
 
 async function startVideoScreen(){
   showScreen('screen-video');
