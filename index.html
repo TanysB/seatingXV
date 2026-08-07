@@ -436,6 +436,7 @@
     display:block; margin:14px auto 2px;
   }
 </style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -591,7 +592,18 @@
     <label for="bgOpacityInput" style="margin-top:14px;">Visibilidad del fondo &middot; Background visibility (<span id="bgOpacityValue">20</span>%)</label>
     <input type="range" id="bgOpacityInput" min="5" max="60" value="20" style="width:100%;">
 
-    <label for="guestTextarea">Lista de invitados y mesas &middot; Guest list &amp; tables</label>
+    <label for="driveClientIdInput" style="margin-top:20px;">Google Drive &mdash; Client ID (opcional &middot; optional)</label>
+    <input type="text" id="driveClientIdInput" placeholder="xxxxxxxxxx.apps.googleusercontent.com">
+    <div class="hint">Si lo configuras, los videos se suben autom&aacute;ticamente a tu Drive en vez de descargarse. Necesita que esta p&aacute;gina est&eacute; alojada en https (no como archivo local). If set, videos upload straight to your Drive instead of downloading. Requires this page to be hosted at an https address (not opened as a local file).</div>
+    <label for="driveFolderIdInput" style="margin-top:12px;">ID de carpeta de Drive (opcional &middot; optional)</label>
+    <input type="text" id="driveFolderIdInput" placeholder="Ej. 1AbCDeFGhijKLmnoPQRstuv">
+    <div class="hint">Copia el ID desde la URL de la carpeta en Drive. D&eacute;jalo vac&iacute;o para guardar en la ra&iacute;z de tu Drive. Copy the ID from the folder's Drive URL. Leave blank to save to your Drive's root.</div>
+    <div style="margin-top:12px; display:flex; align-items:center; gap:12px;">
+      <button class="btn btn-secondary" id="connectDriveBtn" type="button" style="margin-top:0; padding:12px 24px; font-size:15px;">Conectar Google Drive &middot; Connect Google Drive</button>
+      <span id="driveStatus" style="font-size:14px; color:var(--muted); font-weight:600;">No conectado &middot; Not connected</span>
+    </div>
+
+    <label for="guestTextarea" style="margin-top:20px;">Lista de invitados y mesas &middot; Guest list &amp; tables</label>
     <textarea id="guestTextarea" placeholder="Ava Martinez, 1&#10;Liam Torres, 1&#10;Noah Garcia, 2"></textarea>
     <div class="hint">Un invitado por l&iacute;nea: <strong>Nombre Completo, N&uacute;mero de Mesa</strong>. Mesa 17 es para quien no est&eacute; en la lista. One guest per line: <strong>Full Name, Table Number</strong>. Table 17 is reserved for anyone not on the list.</div>
     <div class="hint" style="margin-top:8px;">15 mesas tienen 8 sillas, excepto <strong>Mesa 1 y 2 (7)</strong> y <strong>Mesa 11, 15, 16 (9)</strong>, seg&uacute;n tus ajustes actuales. 15 tables have 8 chairs, except <strong>Table 1 &amp; 2 (7)</strong> and <strong>Table 11, 15, 16 (9)</strong>, per your current adjustments.</div>
@@ -607,7 +619,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'quince-checkin-data-v21';
+const STORAGE_KEY = 'quince-checkin-data-v22';
 
 const SAMPLE = {
   celebrantName: "Caroline",
@@ -1159,11 +1171,101 @@ function onRecordingStopped(){
   document.getElementById('videoHint').innerHTML = 'Rev\u00edsalo y toca Continuar para guardarlo.<span class="en">Review it, then tap Continue to save it.</span>';
 }
 
-// Saves the recording. Tries the native Share Sheet first (gives a clear
-// "Save Video" action on iOS, avoiding Safari's confusing view-vs-download
-// prompt for plain downloads); falls back to a normal file download if
-// sharing isn't available. Must run directly from a tap (not a callback)
-// for the Share Sheet to be allowed to open.
+// ---------- Google Drive auto-upload (optional) ----------
+// Requires this page to be hosted at a real https address — Google's OAuth
+// won't run from a local file:// page. Also requires a Client ID the host
+// creates themselves in Google Cloud Console (see Settings for details).
+let driveTokenClient = null;
+let driveAccessToken = null;
+let driveTokenExpiry = 0;
+
+function initDriveAuth(){
+  if(!appData.driveClientId || !window.google || !google.accounts || !google.accounts.oauth2){
+    driveTokenClient = null;
+    return;
+  }
+  driveTokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: appData.driveClientId,
+    scope: 'https://www.googleapis.com/auth/drive.file',
+    callback: (resp)=>{
+      if(resp && resp.access_token){
+        driveAccessToken = resp.access_token;
+        driveTokenExpiry = Date.now() + ((resp.expires_in || 3600) * 1000);
+        updateDriveStatus();
+      }
+    }
+  });
+}
+
+function updateDriveStatus(){
+  const el = document.getElementById('driveStatus');
+  if(!el) return;
+  const connected = driveAccessToken && Date.now() < driveTokenExpiry;
+  el.textContent = connected
+    ? 'Conectado \u2713 \u00b7 Connected \u2713'
+    : 'No conectado \u00b7 Not connected';
+  el.style.color = connected ? 'var(--arrived)' : 'var(--muted)';
+}
+
+document.getElementById('connectDriveBtn').addEventListener('click', ()=>{
+  const clientId = document.getElementById('driveClientIdInput').value.trim();
+  if(!clientId){
+    alert('Primero escribe tu Google Drive Client ID arriba. \u00b7 First enter your Google Drive Client ID above.');
+    return;
+  }
+  appData.driveClientId = clientId;
+  initDriveAuth();
+  if(!driveTokenClient){
+    alert('No se pudo conectar. Aseg\u00farate de que esta p\u00e1gina est\u00e9 en https. \u00b7 Could not connect. Make sure this page is hosted at an https address.');
+    return;
+  }
+  driveTokenClient.requestAccessToken({prompt: driveAccessToken ? '' : 'consent'});
+});
+
+// Silently refreshes the token if it's missing/expired. Only works without
+// a visible prompt if the browser still has an active Google session.
+function ensureDriveToken(){
+  return new Promise((resolve, reject)=>{
+    if(driveAccessToken && Date.now() < driveTokenExpiry - 60000){
+      resolve(driveAccessToken);
+      return;
+    }
+    if(!driveTokenClient){ reject(new Error('Drive not configured')); return; }
+    driveTokenClient.callback = (resp)=>{
+      if(resp && resp.access_token){
+        driveAccessToken = resp.access_token;
+        driveTokenExpiry = Date.now() + ((resp.expires_in || 3600) * 1000);
+        updateDriveStatus();
+        resolve(driveAccessToken);
+      } else {
+        reject(new Error('Drive auth failed'));
+      }
+    };
+    driveTokenClient.requestAccessToken({prompt:''});
+  });
+}
+
+async function uploadToDrive(file){
+  const token = await ensureDriveToken();
+  const metadata = { name: file.name, mimeType: file.type };
+  if(appData.driveFolderId) metadata.parents = [appData.driveFolderId];
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(metadata)], {type:'application/json'}));
+  form.append('file', file);
+  const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + token },
+    body: form
+  });
+  if(!res.ok) throw new Error('Drive upload failed: ' + res.status);
+  return res.json();
+}
+
+// Saves the recording. If Google Drive is configured and connected, uploads
+// there automatically — no download, no share sheet, nothing for the guest
+// to tap through. Otherwise falls back to the native Share Sheet (gives a
+// clear "Save Video" action on iOS, avoiding Safari's confusing view-vs-download
+// prompt for plain downloads), and finally to a normal file download.
 async function saveRecordedVideo(){
   if(!recordedBlob) return;
   const mime = recordedBlob.type || 'video/webm';
@@ -1172,6 +1274,16 @@ async function saveRecordedVideo(){
   const table = currentGuest ? currentGuest.table : 'x';
   const filename = `${safeName}_table${table}_message.${ext}`;
   const file = new File([recordedBlob], filename, {type: mime});
+
+  if(appData.driveClientId){
+    try{
+      await uploadToDrive(file);
+      return;
+    }catch(err){
+      console.error('Drive upload failed, falling back', err);
+      // fall through to share/download below
+    }
+  }
 
   if(navigator.canShare && navigator.canShare({files:[file]})){
     try{
@@ -1354,6 +1466,9 @@ function openModal(){
   modalBgUrl = appData.backgroundUrl || null;
   document.getElementById('bgOpacityInput').value = appData.backgroundOpacity != null ? appData.backgroundOpacity : 20;
   document.getElementById('bgOpacityValue').textContent = document.getElementById('bgOpacityInput').value;
+  document.getElementById('driveClientIdInput').value = appData.driveClientId || '';
+  document.getElementById('driveFolderIdInput').value = appData.driveFolderId || '';
+  updateDriveStatus();
   updatePhotoPreview();
   updateBgPreview();
   checkCapacity();
@@ -1492,10 +1607,13 @@ document.getElementById('saveModalBtn').addEventListener('click', async ()=>{
     backgroundUrl: modalBgUrl,
     backgroundOpacity: parseInt(document.getElementById('bgOpacityInput').value, 10),
     settingsPin: /^\d{4}$/.test(pinValue) ? pinValue : (appData.settingsPin || '1234'),
+    driveClientId: document.getElementById('driveClientIdInput').value.trim() || null,
+    driveFolderId: document.getElementById('driveFolderIdInput').value.trim() || null,
     guests: guests.length? guests : SAMPLE.guests
   };
   await saveData();
   applyData();
+  initDriveAuth();
   closeModal();
   resetToWelcome();
 });
@@ -1513,6 +1631,8 @@ document.getElementById('fsBtn').addEventListener('click', ()=>{
 loadState();
 loadData().then(()=>{
   document.getElementById('nameInput').focus();
+  // Give the Google script a moment to finish loading before wiring up auth.
+  setTimeout(initDriveAuth, 500);
 });
 </script>
 </body>
