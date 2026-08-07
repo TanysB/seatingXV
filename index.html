@@ -308,6 +308,7 @@
     box-shadow:0 16px 40px rgba(91,42,70,.25);
     object-fit:cover;
   }
+  video.mirrored{transform:scaleX(-1);}
   .record-controls{margin-top:22px; display:flex; align-items:center; gap:20px;}
   .rec-btn{
     width:80px; height:80px; border-radius:50%;
@@ -521,7 +522,7 @@
     </div>
     <div class="btn-row" id="reviewControls" style="display:none;">
       <button class="btn btn-secondary" id="retakeBtn">Repetir &middot; Retake</button>
-      <button class="btn btn-primary" id="saveVideoBtn">Continuar &middot; Continue</button>
+      <button class="btn btn-primary" id="saveVideoBtn">Guardar &middot; Save &amp; Finish</button>
     </div>
     <button class="btn-ghost" id="cancelVideoBtn">Cancelar y Omitir &middot; Cancel and Skip</button>
   </section>
@@ -606,7 +607,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'quince-checkin-data-v19';
+const STORAGE_KEY = 'quince-checkin-data-v21';
 
 const SAMPLE = {
   celebrantName: "Caroline",
@@ -1084,6 +1085,7 @@ async function startVideoScreen(){
     const preview = document.getElementById('preview');
     preview.srcObject = mediaStream;
     preview.muted = true;
+    preview.classList.add('mirrored');
   }catch(err){
     document.getElementById('videoHint').innerHTML = "No pudimos acceder a la c\u00e1mara. Puedes omitir este paso.<span class=\"en\">We couldn't access the camera. You can still skip ahead.</span>";
   }
@@ -1150,20 +1152,37 @@ function onRecordingStopped(){
   preview.src = URL.createObjectURL(recordedBlob);
   preview.muted = false;
   preview.controls = true;
+  preview.classList.remove('mirrored');
   preview.play();
   document.getElementById('recordControls').style.display = 'none';
   document.getElementById('reviewControls').style.display = 'flex';
-  document.getElementById('videoHint').innerHTML = '&iexcl;Ya se guard&oacute;! M&iacute;ralo abajo.<span class="en">Already saved! Watch it back below.</span>';
-  downloadRecordedVideo(); // saves automatically, no extra tap needed
+  document.getElementById('videoHint').innerHTML = 'Rev\u00edsalo y toca Continuar para guardarlo.<span class="en">Review it, then tap Continue to save it.</span>';
 }
 
-function downloadRecordedVideo(){
+// Saves the recording. Tries the native Share Sheet first (gives a clear
+// "Save Video" action on iOS, avoiding Safari's confusing view-vs-download
+// prompt for plain downloads); falls back to a normal file download if
+// sharing isn't available. Must run directly from a tap (not a callback)
+// for the Share Sheet to be allowed to open.
+async function saveRecordedVideo(){
   if(!recordedBlob) return;
+  const mime = recordedBlob.type || 'video/webm';
+  const ext = mime.includes('mp4') ? 'mp4' : 'webm';
   const safeName = (currentGuest ? currentGuest.name : 'guest').replace(/[^a-z0-9]+/gi,'_');
   const table = currentGuest ? currentGuest.table : 'x';
-  const filename = `${safeName}_table${table}_message.webm`;
+  const filename = `${safeName}_table${table}_message.${ext}`;
+  const file = new File([recordedBlob], filename, {type: mime});
+
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({files:[file], title: filename});
+      return;
+    }catch(err){
+      // user cancelled the share sheet, or it failed — fall through to download
+    }
+  }
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(recordedBlob);
+  a.href = URL.createObjectURL(file);
   a.download = filename;
   document.body.appendChild(a);
   a.click();
@@ -1176,10 +1195,12 @@ document.getElementById('retakeBtn').addEventListener('click', ()=>{
   preview.src = '';
   preview.srcObject = mediaStream;
   preview.muted = true;
+  preview.classList.add('mirrored');
   resetVideoUI();
 });
 
-document.getElementById('saveVideoBtn').addEventListener('click', ()=>{
+document.getElementById('saveVideoBtn').addEventListener('click', async ()=>{
+  await saveRecordedVideo();
   finishVideo('Tu mensaje fue guardado. ¡Gracias por tus palabras! \uD83D\uDC96', "Your message was saved. Thank you for the sweet words \uD83D\uDC96");
 });
 
