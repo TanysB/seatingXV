@@ -300,32 +300,6 @@
   .different-table-note .en{display:block; margin-top:2px;}
   .empty-note{color:var(--muted); font-size:19px; font-style:italic; text-align:center;}
 
-  /* Video screen */
-  video{
-    width:min(520px,88vw); max-height:42vh;
-    border-radius:var(--radius);
-    background:#2a1420;
-    box-shadow:0 16px 40px rgba(91,42,70,.25);
-    object-fit:cover;
-  }
-  video.mirrored{transform:scaleX(-1);}
-  .record-controls{margin-top:22px; display:flex; align-items:center; gap:20px;}
-  .rec-btn{
-    width:80px; height:80px; border-radius:50%;
-    background:var(--rose-dark); border:5px solid #fff;
-    box-shadow:0 0 0 4px var(--rose-dark);
-    cursor:pointer; position:relative;
-  }
-  .rec-btn .dot{
-    position:absolute; inset:0; margin:auto;
-    width:28px; height:28px; border-radius:6px; background:#fff;
-    display:none;
-  }
-  .rec-btn.recording .dot{display:block;}
-  .rec-btn.recording{animation:pulse 1.4s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{box-shadow:0 0 0 4px var(--rose-dark);}50%{box-shadow:0 0 0 10px rgba(176,87,127,.25);}}
-  .timer{font-size:24px; font-weight:600; color:var(--rose-dark); font-variant-numeric:tabular-nums; min-width:70px;}
-
   /* Thank you */
   .checkmark{
     width:116px;height:116px;border-radius:50%;background:var(--gold);
@@ -436,7 +410,6 @@
     display:block; margin:14px auto 2px;
   }
 </style>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -505,27 +478,8 @@
     </div>
     <div class="btn-row">
       <button class="btn btn-secondary" id="viewMapBtn" style="display:none;">Ver Mapa &middot; View Map</button>
-      <button class="btn btn-gold" id="toVideoBtn">Dejar un Mensaje &middot; Leave a Message</button>
-      <button class="btn btn-secondary" id="skipBtn">Omitir, Ya Termin&eacute; &middot; Skip, I'm Done</button>
+      <button class="btn btn-primary" id="skipBtn">Listo &middot; Done</button>
     </div>
-  </section>
-
-  <!-- VIDEO -->
-  <section class="screen" id="screen-video">
-    <div class="eyebrow">Un poco de magia &middot; A little birthday magic</div>
-    <h1 style="font-size:30px;">Di algo para <span class="celebrant-script" style="font-size:1.2em;" id="videoCelebrant">Caroline</span></h1>
-    <p class="sub" id="videoHint">Tienes hasta 60 segundos. Presiona el bot&oacute;n para grabar.<span class="en">You've got up to 60 seconds. Press the button to start recording.</span></p>
-    <video id="preview" autoplay muted playsinline></video>
-    <div class="record-controls" id="recordControls">
-      <span class="timer" id="timerText">0:00</span>
-      <button class="rec-btn" id="recBtn" aria-label="Record"><span class="dot"></span></button>
-      <span style="width:64px;"></span>
-    </div>
-    <div class="btn-row" id="reviewControls" style="display:none;">
-      <button class="btn btn-secondary" id="retakeBtn">Repetir &middot; Retake</button>
-      <button class="btn btn-primary" id="saveVideoBtn">Guardar &middot; Save &amp; Finish</button>
-    </div>
-    <button class="btn-ghost" id="cancelVideoBtn">Cancelar y Omitir &middot; Cancel and Skip</button>
   </section>
 
   <!-- THANK YOU -->
@@ -592,17 +546,6 @@
     <label for="bgOpacityInput" style="margin-top:14px;">Visibilidad del fondo &middot; Background visibility (<span id="bgOpacityValue">20</span>%)</label>
     <input type="range" id="bgOpacityInput" min="5" max="60" value="20" style="width:100%;">
 
-    <label for="driveClientIdInput" style="margin-top:20px;">Google Drive &mdash; Client ID (opcional &middot; optional)</label>
-    <input type="text" id="driveClientIdInput" placeholder="xxxxxxxxxx.apps.googleusercontent.com">
-    <div class="hint">Si lo configuras, los videos se suben autom&aacute;ticamente a tu Drive en vez de descargarse. Necesita que esta p&aacute;gina est&eacute; alojada en https (no como archivo local). If set, videos upload straight to your Drive instead of downloading. Requires this page to be hosted at an https address (not opened as a local file).</div>
-    <label for="driveFolderIdInput" style="margin-top:12px;">ID de carpeta de Drive (opcional &middot; optional)</label>
-    <input type="text" id="driveFolderIdInput" placeholder="Ej. 1AbCDeFGhijKLmnoPQRstuv">
-    <div class="hint">Copia el ID desde la URL de la carpeta en Drive. D&eacute;jalo vac&iacute;o para guardar en la ra&iacute;z de tu Drive. Copy the ID from the folder's Drive URL. Leave blank to save to your Drive's root.</div>
-    <div style="margin-top:12px; display:flex; align-items:center; gap:12px;">
-      <button class="btn btn-secondary" id="connectDriveBtn" type="button" style="margin-top:0; padding:12px 24px; font-size:15px;">Conectar Google Drive &middot; Connect Google Drive</button>
-      <span id="driveStatus" style="font-size:14px; color:var(--muted); font-weight:600;">No conectado &middot; Not connected</span>
-    </div>
-
     <label for="guestTextarea" style="margin-top:20px;">Lista de invitados y mesas &middot; Guest list &amp; tables</label>
     <textarea id="guestTextarea" placeholder="Ava Martinez, 1&#10;Liam Torres, 1&#10;Noah Garcia, 2"></textarea>
     <div class="hint">Un invitado por l&iacute;nea: <strong>Nombre Completo, N&uacute;mero de Mesa</strong>. Mesa 17 es para quien no est&eacute; en la lista. One guest per line: <strong>Full Name, Table Number</strong>. Table 17 is reserved for anyone not on the list.</div>
@@ -619,7 +562,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'quince-checkin-data-v28';
+const STORAGE_KEY = 'quince-checkin-data-v30';
 
 const SAMPLE = {
   celebrantName: "Caroline",
@@ -786,12 +729,6 @@ const SAMPLE = {
 
 let appData = JSON.parse(JSON.stringify(SAMPLE));
 let currentGuest = null;
-let mediaStream = null;
-let mediaRecorder = null;
-let chunks = [];
-let recordedBlob = null;
-let timerInterval = null;
-let elapsedSec = 0;
 let resetTimeout = null;
 
 // ---------- party-night state: who has arrived + random friend-table seating ----------
@@ -841,7 +778,6 @@ async function saveData(){
 }
 function applyData(){
   document.getElementById('celebrantTitle').textContent = appData.celebrantName;
-  document.getElementById('videoCelebrant').textContent = appData.celebrantName;
   const portrait = document.getElementById('welcomePortrait');
   if(appData.photoUrl){
     portrait.src = appData.photoUrl;
@@ -1083,257 +1019,6 @@ document.getElementById('skipBtn').addEventListener('click', ()=>{
   resetTimeout = setTimeout(resetToWelcome, 4000);
 });
 
-// ---------- video recording ----------
-document.getElementById('toVideoBtn').addEventListener('click', ()=>{
-  commitPendingArrivals();
-  startVideoScreen();
-});
-
-async function startVideoScreen(){
-  showScreen('screen-video');
-  resetVideoUI();
-  try{
-    mediaStream = await navigator.mediaDevices.getUserMedia({video:true, audio:true});
-    const preview = document.getElementById('preview');
-    preview.srcObject = mediaStream;
-    preview.muted = true;
-    preview.classList.add('mirrored');
-  }catch(err){
-    document.getElementById('videoHint').innerHTML = "No pudimos acceder a la c\u00e1mara. Puedes omitir este paso.<span class=\"en\">We couldn't access the camera. You can still skip ahead.</span>";
-  }
-}
-
-function resetVideoUI(){
-  chunks = [];
-  recordedBlob = null;
-  elapsedSec = 0;
-  document.getElementById('timerText').textContent = '0:00';
-  document.getElementById('recBtn').classList.remove('recording');
-  document.getElementById('recordControls').style.display = 'flex';
-  document.getElementById('reviewControls').style.display = 'none';
-  document.getElementById('videoHint').innerHTML = "Tienes hasta 60 segundos. Presiona el bot\u00f3n para grabar.<span class=\"en\">You've got up to 60 seconds. Press the button to start recording.</span>";
-}
-
-document.getElementById('recBtn').addEventListener('click', ()=>{
-  const btn = document.getElementById('recBtn');
-  if(!btn.classList.contains('recording')){
-    startRecording();
-  } else {
-    stopRecording();
-  }
-});
-
-function startRecording(){
-  if(!mediaStream) return;
-  chunks = [];
-  try{
-    mediaRecorder = new MediaRecorder(mediaStream, {mimeType: pickMime()});
-  }catch(e){
-    mediaRecorder = new MediaRecorder(mediaStream);
-  }
-  mediaRecorder.ondataavailable = e => { if(e.data && e.data.size>0) chunks.push(e.data); };
-  mediaRecorder.onstop = onRecordingStopped;
-  mediaRecorder.start();
-  document.getElementById('recBtn').classList.add('recording');
-  document.getElementById('videoHint').innerHTML = 'Grabando... <span class="en">Recording...</span>';
-  elapsedSec = 0;
-  timerInterval = setInterval(()=>{
-    elapsedSec++;
-    const m = Math.floor(elapsedSec/60), s = elapsedSec%60;
-    document.getElementById('timerText').textContent = m + ':' + String(s).padStart(2,'0');
-    if(elapsedSec >= 60) stopRecording();
-  }, 1000);
-}
-
-function pickMime(){
-  const options = ['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'];
-  for(const o of options){ if(window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(o)) return o; }
-  return '';
-}
-
-function stopRecording(){
-  clearInterval(timerInterval);
-  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-  document.getElementById('recBtn').classList.remove('recording');
-}
-
-function onRecordingStopped(){
-  recordedBlob = new Blob(chunks, {type: mediaRecorder.mimeType || 'video/webm'});
-  const preview = document.getElementById('preview');
-  preview.srcObject = null;
-  preview.src = URL.createObjectURL(recordedBlob);
-  preview.muted = false;
-  preview.controls = true;
-  preview.classList.remove('mirrored');
-  preview.play();
-  document.getElementById('recordControls').style.display = 'none';
-  document.getElementById('reviewControls').style.display = 'flex';
-  document.getElementById('videoHint').innerHTML = 'Rev\u00edsalo y toca Continuar para guardarlo.<span class="en">Review it, then tap Continue to save it.</span>';
-}
-
-// ---------- Google Drive auto-upload (optional) ----------
-// Requires this page to be hosted at a real https address — Google's OAuth
-// won't run from a local file:// page. Also requires a Client ID the host
-// creates themselves in Google Cloud Console (see Settings for details).
-let driveTokenClient = null;
-let driveAccessToken = null;
-let driveTokenExpiry = 0;
-
-function initDriveAuth(){
-  if(!appData.driveClientId || !window.google || !google.accounts || !google.accounts.oauth2){
-    driveTokenClient = null;
-    return;
-  }
-  driveTokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: appData.driveClientId,
-    scope: 'https://www.googleapis.com/auth/drive.file',
-    callback: (resp)=>{
-      if(resp && resp.access_token){
-        driveAccessToken = resp.access_token;
-        driveTokenExpiry = Date.now() + ((resp.expires_in || 3600) * 1000);
-        updateDriveStatus();
-      }
-    }
-  });
-}
-
-function updateDriveStatus(){
-  const el = document.getElementById('driveStatus');
-  if(!el) return;
-  const connected = driveAccessToken && Date.now() < driveTokenExpiry;
-  el.textContent = connected
-    ? 'Conectado \u2713 \u00b7 Connected \u2713'
-    : 'No conectado \u00b7 Not connected';
-  el.style.color = connected ? 'var(--arrived)' : 'var(--muted)';
-}
-
-document.getElementById('connectDriveBtn').addEventListener('click', ()=>{
-  const clientId = document.getElementById('driveClientIdInput').value.trim();
-  if(!clientId){
-    alert('Primero escribe tu Google Drive Client ID arriba. \u00b7 First enter your Google Drive Client ID above.');
-    return;
-  }
-  appData.driveClientId = clientId;
-  initDriveAuth();
-  if(!driveTokenClient){
-    alert('No se pudo conectar. Aseg\u00farate de que esta p\u00e1gina est\u00e9 en https. \u00b7 Could not connect. Make sure this page is hosted at an https address.');
-    return;
-  }
-  driveTokenClient.requestAccessToken({prompt: driveAccessToken ? '' : 'consent'});
-});
-
-// Silently refreshes the token if it's missing/expired. Only works without
-// a visible prompt if the browser still has an active Google session.
-function ensureDriveToken(){
-  return new Promise((resolve, reject)=>{
-    if(driveAccessToken && Date.now() < driveTokenExpiry - 60000){
-      resolve(driveAccessToken);
-      return;
-    }
-    if(!driveTokenClient){ reject(new Error('Drive not configured')); return; }
-    driveTokenClient.callback = (resp)=>{
-      if(resp && resp.access_token){
-        driveAccessToken = resp.access_token;
-        driveTokenExpiry = Date.now() + ((resp.expires_in || 3600) * 1000);
-        updateDriveStatus();
-        resolve(driveAccessToken);
-      } else {
-        reject(new Error('Drive auth failed'));
-      }
-    };
-    driveTokenClient.requestAccessToken({prompt:''});
-  });
-}
-
-async function uploadToDrive(file){
-  const token = await ensureDriveToken();
-  const metadata = { name: file.name, mimeType: file.type };
-  if(appData.driveFolderId) metadata.parents = [appData.driveFolderId];
-  const form = new FormData();
-  form.append('metadata', new Blob([JSON.stringify(metadata)], {type:'application/json'}));
-  form.append('file', file);
-  const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-    method: 'POST',
-    headers: { Authorization: 'Bearer ' + token },
-    body: form
-  });
-  if(!res.ok) throw new Error('Drive upload failed: ' + res.status);
-  return res.json();
-}
-
-// Saves the recording. If Google Drive is configured and connected, uploads
-// there automatically — no download, no share sheet, nothing for the guest
-// to tap through. Otherwise falls back to the native Share Sheet (gives a
-// clear "Save Video" action on iOS, avoiding Safari's confusing view-vs-download
-// prompt for plain downloads), and finally to a normal file download.
-async function saveRecordedVideo(){
-  if(!recordedBlob) return;
-  const mime = recordedBlob.type || 'video/webm';
-  const ext = mime.includes('mp4') ? 'mp4' : 'webm';
-  const safeName = (currentGuest ? currentGuest.name : 'guest').replace(/[^a-z0-9]+/gi,'_');
-  const table = currentGuest ? currentGuest.table : 'x';
-  const filename = `${safeName}_table${table}_message.${ext}`;
-  const file = new File([recordedBlob], filename, {type: mime});
-
-  if(appData.driveClientId){
-    try{
-      await uploadToDrive(file);
-      return;
-    }catch(err){
-      console.error('Drive upload failed, falling back', err);
-      // fall through to share/download below
-    }
-  }
-
-  if(navigator.canShare && navigator.canShare({files:[file]})){
-    try{
-      await navigator.share({files:[file], title: filename});
-      return;
-    }catch(err){
-      // user cancelled the share sheet, or it failed — fall through to download
-    }
-  }
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(file);
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-
-document.getElementById('retakeBtn').addEventListener('click', ()=>{
-  const preview = document.getElementById('preview');
-  preview.controls = false;
-  preview.src = '';
-  preview.srcObject = mediaStream;
-  preview.muted = true;
-  preview.classList.add('mirrored');
-  resetVideoUI();
-});
-
-document.getElementById('saveVideoBtn').addEventListener('click', async ()=>{
-  await saveRecordedVideo();
-  finishVideo('Tu mensaje fue guardado. ¡Gracias por tus palabras! \uD83D\uDC96', "Your message was saved. Thank you for the sweet words \uD83D\uDC96");
-});
-
-document.getElementById('cancelVideoBtn').addEventListener('click', ()=>{
-  finishVideo('Disfruta la celebraci\u00f3n \uD83C\uDF89', 'Enjoy the celebration \uD83C\uDF89');
-});
-
-function finishVideo(esMessage, enMessage){
-  stopMediaStream();
-  document.getElementById('thankyouSub').innerHTML = esMessage + '<span class="en">' + enMessage + '</span>';
-  showScreen('screen-thankyou');
-  resetTimeout = setTimeout(resetToWelcome, 4500);
-}
-
-function stopMediaStream(){
-  if(mediaStream){
-    mediaStream.getTracks().forEach(t=>t.stop());
-    mediaStream = null;
-  }
-}
-
 // Funny table names, keyed by table number
 const TABLE_NAMES = {
   1:"Los Que Bailan Hasta el Final",
@@ -1468,9 +1153,6 @@ function openModal(){
   modalBgUrl = appData.backgroundUrl || null;
   document.getElementById('bgOpacityInput').value = appData.backgroundOpacity != null ? appData.backgroundOpacity : 20;
   document.getElementById('bgOpacityValue').textContent = document.getElementById('bgOpacityInput').value;
-  document.getElementById('driveClientIdInput').value = appData.driveClientId || '';
-  document.getElementById('driveFolderIdInput').value = appData.driveFolderId || '';
-  updateDriveStatus();
   updatePhotoPreview();
   updateBgPreview();
   checkCapacity();
@@ -1609,13 +1291,10 @@ document.getElementById('saveModalBtn').addEventListener('click', async ()=>{
     backgroundUrl: modalBgUrl,
     backgroundOpacity: parseInt(document.getElementById('bgOpacityInput').value, 10),
     settingsPin: /^\d{4}$/.test(pinValue) ? pinValue : (appData.settingsPin || '1234'),
-    driveClientId: document.getElementById('driveClientIdInput').value.trim() || null,
-    driveFolderId: document.getElementById('driveFolderIdInput').value.trim() || null,
     guests: guests.length? guests : SAMPLE.guests
   };
   await saveData();
   applyData();
-  initDriveAuth();
   closeModal();
   resetToWelcome();
 });
@@ -1633,8 +1312,6 @@ document.getElementById('fsBtn').addEventListener('click', ()=>{
 loadState();
 loadData().then(()=>{
   document.getElementById('nameInput').focus();
-  // Give the Google script a moment to finish loading before wiring up auth.
-  setTimeout(initDriveAuth, 500);
 });
 </script>
 </body>
