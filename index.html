@@ -619,7 +619,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'quince-checkin-data-v22';
+const STORAGE_KEY = 'quince-checkin-data-v28';
 
 const SAMPLE = {
   celebrantName: "Caroline",
@@ -629,13 +629,13 @@ const SAMPLE = {
   settingsPin: "1234",
   guests: [
     // Mesa 1 (7)
-    {name:"Jesus Nunez Mondragon", table:1},
-    {name:"Sandra Aguilar Garcia", table:1},
-    {name:"Mauricio Nunez Aguilar", table:1},
-    {name:"Zulem Nunez Aguilar", table:1},
-    {name:"Luis Alberto Lopez Izquierdo", table:1},
-    {name:"Rosa Nunez Aguilar", table:1},
-    {name:"Jose Antonio Tovar Gonzalez", table:1},
+    {name:"Jesus Nunez Mondragon", table:3},
+    {name:"Sandra Aguilar Garcia", table:3},
+    {name:"Mauricio Nunez Aguilar", table:3},
+    {name:"Zulem Nunez Aguilar", table:3},
+    {name:"Luis Alberto Lopez Izquierdo", table:3},
+    {name:"Rosa Nunez Aguilar", table:3},
+    {name:"Jose Antonio Tovar Gonzalez", table:3},
     // Mesa 2 (8)
     {name:"Berenice Vences", table:2},
     {name:"Adela Vences", table:2},
@@ -646,14 +646,14 @@ const SAMPLE = {
     {name:"Sergio Alvarez Villegas", table:2},
     {name:"Columba", table:2},
     // Mesa 3 (8)
-    {name:"Vero", table:3},
-    {name:"Javier", table:3},
-    {name:"Sherlyn", table:3},
-    {name:"Isabella Siquiera", table:3},
-    {name:"Sophia Malling", table:3},
-    {name:"Oscar", table:3},
-    {name:"Karen", table:3},
-    {name:"Mario", table:3},
+    {name:"Vero", table:14},
+    {name:"Javier", table:14},
+    {name:"Sherlyn", table:14},
+    {name:"Isabella Siquiera", table:14},
+    {name:"Sophia Malling", table:14},
+    {name:"Oscar", table:14},
+    {name:"Karen", table:14},
+    {name:"Mario", table:14},
     // Mesa 4 (8)
     {name:"Adriana", table:4},
     {name:"Ian Galvez", table:4},
@@ -728,33 +728,33 @@ const SAMPLE = {
     {name:"Diego", table:11},
     {name:"Esmeralda", table:11},
     // Mesa 12 (9)
-    {name:"Juan", table:12},
-    {name:"Jaime", table:12},
-    {name:"Geo", table:12},
-    {name:"Alma Pacheco", table:12},
-    {name:"Pedro Pacheco", table:12},
-    {name:"Junior", table:12},
-    {name:"Aiden", table:12},
-    {name:"Jasmine", table:12},
-    {name:"Angel", table:12},
+    {name:"Juan", table:13},
+    {name:"Jaime", table:13},
+    {name:"Geo", table:13},
+    {name:"Alma Pacheco", table:13},
+    {name:"Pedro Pacheco", table:13},
+    {name:"Junior", table:13},
+    {name:"Aiden", table:13},
+    {name:"Jasmine", table:13},
+    {name:"Angel", table:13},
     // Mesa 13 (8)
-    {name:"Angeles", table:13},
-    {name:"Ana Diaz", table:13},
-    {name:"Juan Maldonado", table:13},
-    {name:"Diana", table:13},
-    {name:"Marina Elias", table:13},
-    {name:"Martin Elias", table:13},
-    {name:"Angi", table:13},
-    {name:"Ian", table:13},
+    {name:"Angeles", table:12},
+    {name:"Ana Diaz", table:12},
+    {name:"Juan Maldonado", table:12},
+    {name:"Diana", table:12},
+    {name:"Marina Elias", table:12},
+    {name:"Martin Elias", table:12},
+    {name:"Angi", table:12},
+    {name:"Ian", table:12},
     // Mesa 14 (8)
-    {name:"Jocelyn", table:14},
-    {name:"Lizbeth", table:14},
-    {name:"Juan Rodriguez", table:14},
-    {name:"Sherlyn", table:14},
-    {name:"Emily Rodriguez", table:14},
-    {name:"Maria Rodriguez", table:14},
-    {name:"Susana", table:14},
-    {name:"Kimmell", table:14},
+    {name:"Jocelyn", table:1},
+    {name:"Lizbeth", table:1},
+    {name:"Juan Rodriguez", table:1},
+    {name:"Sherlyn", table:1},
+    {name:"Emily Rodriguez", table:1},
+    {name:"Maria Rodriguez", table:1},
+    {name:"Susana", table:1},
+    {name:"Kimmell", table:1},
     // Mesa 15 (9)
     {name:"Samantha Vizcarra", table:15},
     {name:"Yazmin Maradiaga", table:15},
@@ -1362,8 +1362,10 @@ const TABLE_POSITIONS = {
   4:{x:44.8, y:42.5}, 5:{x:58.5, y:42.5},
   6:{x:38.0, y:32.8}, 7:{x:53.0, y:32.8}, 8:{x:64.5, y:32.8},
   9:{x:44.8, y:24.3}, 10:{x:58.0, y:24.3},
-  11:{x:73.0, y:24.3}, 12:{x:37.8, y:16.2}, 13:{x:66.5, y:16.2},
+  11:{x:73.0, y:24.3}, 12:{x:37.8, y:16.2},
   14:{x:16.0, y:42.4}, 15:{x:16.0, y:32.0}, 16:{x:16.0, y:21.7}
+  // Note: Table 13 is a label only on the floor plan (no physical round
+  // table, same as 17), so it has no map position and won't highlight.
 };
 let mapImageLoaded = false;
 loadMapImage(); // check for the layout image once at startup
